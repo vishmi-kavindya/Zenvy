@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" class="font-size-normal">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AuraMart - Modern luxury and accessible fashion, electronics & gourmet shopping inspired by VÉLORA. Universal Design with font scaling, high contrast, and audio narration." />
+  <title>AuraMart | Modern Luxury &amp; Accessible E-Commerce</title>
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Accessible Skip Link for Keyboard Navigation -->
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+
+  <!-- ARIA Live Region for Screen Reader Announcements -->
+  <div id="a11yLiveAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ==========================================================================
+       TOP ANNOUNCEMENT BAR & ACCESSIBILITY CONTROLS
+       ========================================================================== -->
+  <aside class="site-announcement-strip" aria-label="Announcement & Accessibility Toolbar">
+    <div class="announcement-container">
+      <div class="announcement-promo">
+        Free Shipping on Orders Over $100 &bull; <strong>Universal Design Standards</strong> &bull; 30-Day Easy Returns
+      </div>
+
+      <!-- Accessibility Toolbar Controls -->
+      <div class="a11y-group-wrap">
+        <!-- Font Size Scaling Controls (A, A+, A++) -->
+        <div class="a11y-item">
+          <span class="a11y-label" id="fontCtrlLabel">Text Size:</span>
+          <div class="font-size-controls" role="group" aria-labelledby="fontCtrlLabel">
+            <button type="button" class="font-size-btn active" data-size="normal" aria-pressed="true" title="Default font size (100%)">A</button>
+            <button type="button" class="font-size-btn" data-size="large" aria-pressed="false" title="Large font size (115%)">A+</button>
+            <button type="button" class="font-size-btn" data-size="xlarge" aria-pressed="false" title="Extra Large font size (130%)">A++</button>
+          </div>
+        </div>
+
+        <!-- High Contrast Mode Toggle -->
+        <div class="a11y-item">
+          <button type="button" class="btn-contrast-toggle" aria-pressed="false" title="Toggle High Contrast Mode (WCAG AAA)">
+            <span class="contrast-btn-icon" aria-hidden="true">◐</span>
+            <span class="contrast-btn-label">High Contrast</span>
+          </button>
+        </div>
+
+        <!-- Audio Narration Controls -->
+        <div class="a11y-item">
+          <div class="audio-narration-bar" role="region" aria-label="Audio Reader Controls">
+            <span class="audio-status-pulse" title="Audio Status" aria-hidden="true"></span>
+            <button type="button" id="audioPlaySummaryBtn" class="btn-audio-control" title="Listen to page summary">
+              🔊 Read Page
+            </button>
+            <button type="button" id="audioPauseBtn" class="btn-audio-control" style="display: none;" title="Pause audio narration">
+              ⏸ Pause
+            </button>
+            <button type="button" id="audioStopBtn" class="btn-audio-control" style="display: none;" title="Stop audio narration">
+              ⏹ Stop
+            </button>
+            <label for="speechRateSelect" class="sr-only">Voice Speed</label>
+            <select id="speechRateSelect" class="speech-rate-select" title="Voice Speed">
+              <option value="0.8">0.8x</option>
+              <option value="1.0" selected>1.0x</option>
+              <option value="1.2">1.2x</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       MAIN NAVIGATION HEADER (VÉLORA LUXURY STYLE)
+       ========================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <!-- Brand Logo Image (LOGO.png) -->
+      <a href="index.html" class="brand-logo-link" aria-label="Zenvy Home">
+        <img src="images/LOGO.png" alt="Zenvy - Curated for Digital Living" class="brand-logo-img" />
+      </a>
+
+      <!-- Navigation Links (Centered) -->
+      <nav class="nav-menu" id="primaryNav" role="navigation" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link active" aria-current="page">Home</a>
+        <a href="products.html" class="nav-link">Shop All</a>
+        <a href="products.html?category=clothing" class="nav-link">Clothing</a>
+        <a href="products.html?category=electronics" class="nav-link">Electronics</a>
+        <a href="products.html?category=food" class="nav-link">Gourmet Food</a>
+      </nav>
+
+      <!-- Right Header Actions: Compact Search + Cart + Mobile Menu -->
+      <div class="header-actions-group">
+        <div class="nav-search-wrap" role="search">
+          <div class="search-input-box">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <label for="globalSearchInput" class="sr-only">Search products</label>
+            <input 
+              type="search" 
+              id="globalSearchInput" 
+              class="product-search-input" 
+              placeholder="Search essentials..." 
+              autocomplete="off" 
+              aria-autocomplete="list"
+              aria-controls="navSearchSuggestions"
+            />
+            <button type="button" class="search-clear-btn" aria-label="Clear search query" title="Clear input">✕</button>
+          </div>
+          <div id="navSearchSuggestions" class="search-suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
+        </div>
+
+        <a 
+          href="cart.html" 
+          class="btn-cart-trigger" 
+          aria-label="Shopping Cart (Member 02 Feature)"
+          title="Shopping Cart (Member 02 Feature)"
+        >
+          <span aria-hidden="true">🛒</span>
+          <span class="btn-text">Cart</span>
+        </a>
+
+        <button 
+          type="button" 
+          class="mobile-menu-btn" 
+          id="mobileMenuToggle" 
+          aria-expanded="false" 
+          aria-controls="primaryNav" 
+          aria-label="Toggle mobile menu"
+        >
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN CONTENT
+       ========================================================================== -->
+  <main id="mainContent">
+    <!-- ==========================================================================
+         HERO SLIDER SECTION (VÉLORA CINEMATIC EDITORIAL SLIDER - MATCHING IMAGE 2)
+         ========================================================================== -->
+    <section class="hero-section" id="heroSection" aria-label="Featured Collections Carousel">
+      <div class="hero-slider-container" id="heroSlider" role="region" aria-roledescription="carousel" aria-label="Hero Highlights" tabindex="0">
+        
+        <!-- Navigation Circular Arrows (Matching Reference Image) -->
+        <button 
+          type="button" 
+          class="slider-arrow slider-arrow-prev" 
+          id="heroPrevBtn" 
+          aria-label="Previous slide"
+          title="Previous slide"
+        >
+          <span aria-hidden="true">&#10094;</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="slider-arrow slider-arrow-next" 
+          id="heroNextBtn" 
+          aria-label="Next slide"
+          title="Next slide"
+        >
+          <span aria-hidden="true">&#10095;</span>
+        </button>
+
+        <!-- Slides Wrapper -->
+        <div class="hero-slides-track" id="heroSlidesTrack">
+          <!-- Slide 1: Clothing & Apparel (clothing.jpeg) -->
+          <article class="hero-slide is-active" data-index="0" role="group" aria-roledescription="slide" aria-label="Slide 1 of 3: Elevate Your Style">
+            <div class="slide-bg-wrap">
+              <img src="images/clothing.jpeg" alt="Luxury fashion model in tailored beige blazer" class="slide-bg-img img-clothing" />
+              <div class="slide-gradient-overlay"></div>
+            </div>
+            <div class="slide-content-wrap">
+              <div class="slide-content">
+                <span class="slide-tag">NEW SEASON</span>
+                <h1 class="slide-title">
+                  Elevate <br />
+                  <span class="title-gold">Your Style</span>
+                </h1>
+                <p class="slide-desc">
+                  Discover timeless, accessible pieces for a more confident you. Curated with premium texture and effortless silhouette.
+                </p>
+                <div class="slide-actions">
+                  <a href="products.html?category=clothing" class="btn-hero-shop">
+                    <span>Shop Now</span>
+                    <span aria-hidden="true">&rarr;</span>
+                  </a>
+                  <button type="button" class="btn-hero-audio" onclick="narratePageSummary()" aria-label="Listen to audio overview of home page">
+                    <span aria-hidden="true">🔊</span>
+                    <span>Listen</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 2: Electronics & Sound (elec.jpeg) -->
+          <article class="hero-slide" data-index="1" role="group" aria-roledescription="slide" aria-label="Slide 2 of 3: Precision Sound & Tech" aria-hidden="true">
+            <div class="slide-bg-wrap">
+              <img src="images/elec.jpeg" alt="Silver studio noise-cancelling headphones, smartwatch and smartphone" class="slide-bg-img img-elec" />
+              <div class="slide-gradient-overlay"></div>
+            </div>
+            <div class="slide-content-wrap">
+              <div class="slide-content">
+                <span class="slide-tag">DIGITAL LIVING</span>
+                <h2 class="slide-title">
+                  Precision <br />
+                  <span class="title-gold">Sound &amp; Tech</span>
+                </h2>
+                <p class="slide-desc">
+                  Engineered acoustic clarity and smart wearable essentials tailored for seamless focus, productivity, and modern living.
+                </p>
+                <div class="slide-actions">
+                  <a href="products.html?category=electronics" class="btn-hero-shop">
+                    <span>Explore Tech</span>
+                    <span aria-hidden="true">&rarr;</span>
+                  </a>
+                  <button type="button" class="btn-hero-audio" onclick="narratePageSummary()" aria-label="Listen to audio overview of home page">
+                    <span aria-hidden="true">🔊</span>
+                    <span>Listen</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 3: Gourmet Food & Dining (food.jpeg) -->
+          <article class="hero-slide" data-index="2" role="group" aria-roledescription="slide" aria-label="Slide 3 of 3: Artisanal Fine Dining" aria-hidden="true">
+            <div class="slide-bg-wrap">
+              <img src="images/food.jpeg" alt="Artisanal gourmet sushi rolls with savory toppings on black slate" class="slide-bg-img img-food" />
+              <div class="slide-gradient-overlay"></div>
+            </div>
+            <div class="slide-content-wrap">
+              <div class="slide-content">
+                <span class="slide-tag">GOURMET SELECTION</span>
+                <h2 class="slide-title">
+                  Artisanal <br />
+                  <span class="title-gold">Fine Dining</span>
+                </h2>
+                <p class="slide-desc">
+                  Exquisite culinary indulgence and certified organic delicacies hand-selected for an unforgettable gastronomic experience.
+                </p>
+                <div class="slide-actions">
+                  <a href="products.html?category=food" class="btn-hero-shop">
+                    <span>Taste Collections</span>
+                    <span aria-hidden="true">&rarr;</span>
+                  </a>
+                  <button type="button" class="btn-hero-audio" onclick="narratePageSummary()" aria-label="Listen to audio overview of home page">
+                    <span aria-hidden="true">🔊</span>
+                    <span>Listen</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Slider Controls / Indicators (Matching Reference Image 2 bottom-right) -->
+        <div class="slider-controls-bar">
+          <div class="slider-dots" role="tablist" aria-label="Slide Selection">
+            <button type="button" class="slider-dot is-active" data-slide="0" role="tab" aria-selected="true" aria-label="Go to Slide 1 (Clothing)">
+              <span class="dot-num">01</span>
+            </button>
+            <button type="button" class="slider-dot" data-slide="1" role="tab" aria-selected="false" aria-label="Go to Slide 2 (Electronics)">
+              <span class="dot-num">02</span>
+            </button>
+            <button type="button" class="slider-dot" data-slide="2" role="tab" aria-selected="false" aria-label="Go to Slide 3 (Gourmet Food)">
+              <span class="dot-num">03</span>
+            </button>
+          </div>
+          
+          <div class="slider-counter" aria-hidden="true">
+            <span id="sliderCurrentNum" class="counter-curr">01</span>
+            <span class="counter-divider">/</span>
+            <span class="counter-total">03</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust & Accessibility Metrics Strip -->
+      <div class="section-wrapper" style="padding-top: 36px; padding-bottom: 0;">
+        <div class="hero-trust-metrics-strip">
+          <div class="metric-item">
+            <span class="metric-val">10</span>
+            <span class="metric-label">Curated Items</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-val">3</span>
+            <span class="metric-label">Collections</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-val">AAA</span>
+            <span class="metric-label">WCAG Contrast</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-val">100%</span>
+            <span class="metric-label">Accessible</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         PRODUCT CATEGORIES (THE EXACT 3 CATEGORIES SPEC - EDITORIAL CARDS)
+         ========================================================================== -->
+    <section class="section-wrapper" aria-labelledby="catHeading">
+      <div class="section-header-row">
+        <div class="section-header-col">
+          <span class="section-tag">Collections</span>
+          <h2 id="catHeading" class="section-heading">Shop By Category</h2>
+          <p class="section-description">
+            Explore our 3 signature collections designed for effortless elegance and universal accessibility.
+          </p>
+        </div>
+        <a href="products.html" class="category-card-link-text">Browse Full Catalog &rarr;</a>
+      </div>
+
+      <div class="categories-grid-3">
+        <!-- Category 1: Clothing -->
+        <a href="products.html?category=clothing" class="category-card" aria-label="Browse Clothing Collection (3 products)">
+          <img 
+            src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=800&q=80" 
+            alt="Clothing Collection" 
+            class="category-card-bg"
+          />
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <span class="category-card-count">3 Products</span>
+            <h3 class="category-card-title">Clothing &amp; Apparel</h3>
+            <p class="category-card-desc">
+              Organic linen shirts, tactile weather-repellent windbreakers, and flex denim jeans tailored for all-day comfort.
+            </p>
+            <span class="category-card-link-text">Explore Collection &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Category 2: Electronics -->
+        <a href="products.html?category=electronics" class="category-card" aria-label="Browse Electronics Collection (4 products)">
+          <img 
+            src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80" 
+            alt="Electronics Collection" 
+            class="category-card-bg"
+          />
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <span class="category-card-count">4 Products</span>
+            <h3 class="category-card-title">Electronics &amp; Sound</h3>
+            <p class="category-card-desc">
+              Precision ANC headphones, minimalist chrono smartwatch, 360 acoustic studio speaker, and 4K action cameras.
+            </p>
+            <span class="category-card-link-text">Explore Collection &rarr;</span>
+          </div>
+        </a>
+
+        <!-- Category 3: Food -->
+        <a href="products.html?category=food" class="category-card" aria-label="Browse Food Collection (3 products)">
+          <img 
+            src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80" 
+            alt="Gourmet Food Collection" 
+            class="category-card-bg"
+          />
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <span class="category-card-count">3 Products</span>
+            <h3 class="category-card-title">Food &amp; Gourmet</h3>
+            <p class="category-card-desc">
+              Pure unheated alpine wildflower honey, artisan roast specialty Arabica beans, and slow-roasted Himalayan nut mix.
+            </p>
+            <span class="category-card-link-text">Explore Collection &rarr;</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         FEATURED PRODUCTS SECTION (LUXURY EDITORIAL CARDS)
+         ========================================================================== -->
+    <section class="section-wrapper" aria-labelledby="featuredHeading">
+      <div class="section-header-row">
+        <div class="section-header-col">
+          <span class="section-tag">Curated Picks</span>
+          <h2 id="featuredHeading" class="section-heading">Featured Products</h2>
+          <p class="section-description">
+            Handpicked bestsellers featuring instant audio readout, high-contrast clarity, and effortless shopping basket integration.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <a href="products.html" class="btn-secondary-outline">
+            <span>View All (10 Items)</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="products-grid" id="featuredProductsGrid">
+        <!-- Rendered dynamically by products.js -->
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         EDITORIAL PROMO STRIP ("STYLE BEYOND TRENDS" - VÉLORA BANNER)
+         ========================================================================== -->
+    <section class="editorial-promo-strip" aria-labelledby="promoBannerTitle">
+      <div class="promo-container">
+        <div>
+          <span class="promo-tag">Philosophy</span>
+          <h2 id="promoBannerTitle" class="promo-title">
+            Style Beyond Trends.<br />
+            <em>Minimal. Modern. Meaningful.</em>
+          </h2>
+          <p class="promo-subtitle">
+            Every product in AuraMart is built with precision, sensory comfort, and universal access at its core. From intuitive keyboard shortcuts to audible narrations, shopping is effortless for everyone.
+          </p>
+          <a href="products.html" class="btn-primary-glow">
+            <span>Explore Collection</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <div class="promo-values-grid">
+          <div class="value-item">
+            <div class="value-icon" aria-hidden="true">💎</div>
+            <h3 class="value-title">100% Premium Quality</h3>
+            <p class="value-desc">Meticulously crafted items with rich specifications and sensory-conscious design.</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon" aria-hidden="true">♿</div>
+            <h3 class="value-title">Universal Design Standards</h3>
+            <p class="value-desc">WCAG AAA compliant contrast, scalable typography (A, A+, A++), and speech narration.</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon" aria-hidden="true">⚙️</div>
+            <h3 class="value-title">Adaptive Preferences</h3>
+            <p class="value-desc">Persistent font size scaling (A, A+, A++) and WCAG AAA high contrast stored in localStorage.</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon" aria-hidden="true">🔊</div>
+            <h3 class="value-title">Multi-Modal Audio</h3>
+            <p class="value-desc">Built-in Web Speech API narration offering speech summaries and product-level readouts.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================================================
+         NEWSLETTER STRIP (MATCHING VÉLORA NEWSLETTER BOX)
+         ========================================================================== -->
+    <section class="section-wrapper" style="padding-top: 0;">
+      <div style="background: #141210; border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;">
+        <div>
+          <h3 style="font-family: var(--font-serif); font-size: var(--fs-xl); color: #ffffff; margin-bottom: 6px;">Join Our Newsletter</h3>
+          <p style="font-size: var(--fs-sm); color: var(--text-muted); margin: 0;">Get the latest updates, new arrivals, and inclusive design insights.</p>
+        </div>
+        <form onsubmit="event.preventDefault(); showToast('Thank you for subscribing!', 'success');" style="display: flex; gap: 10px; max-width: 440px; width: 100%;">
+          <input 
+            type="email" 
+            placeholder="Enter your email address" 
+            required 
+            style="flex: 1; padding: 12px 18px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); border-radius: var(--radius-full); color: #fff; font-size: var(--fs-sm); outline: none;"
+          />
+          <button type="submit" class="btn-primary-glow" style="padding: 12px 24px; white-space: nowrap;">
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       PRODUCT DETAILS ACCESSIBLE MODAL
+       ========================================================================== -->
+  <div 
+    id="productModal" 
+    class="product-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="modalTitle" 
+    aria-hidden="true"
+  >
+    <div class="product-modal-dialog">
+      <button 
+        type="button" 
+        id="closeModalBtn" 
+        class="btn-close-modal" 
+        onclick="closeModal()" 
+        aria-label="Close product details dialog"
+      >
+        ✕
+      </button>
+      <div id="modalProductContent">
+        <!-- Rendered dynamically by products.js -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       FOOTER (VÉLORA LUXURY FOOTER)
+       ========================================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="brand-logo-link" style="margin-bottom: 8px;">
+            <img src="images/LOGO.png" alt="Zenvy" class="footer-logo-img" />
+          </a>
+          <p>
+            An inclusive e-commerce web platform engineered for CINEC Campus Human-Computer Interaction (HCI) assignment. Adheres strictly to Universal Design standards with persistent storage and multi-modal interaction.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Shop Collections</h4>
+          <ul class="footer-links-list">
+            <li><a href="products.html?category=clothing">Clothing &amp; Apparel (3)</a></li>
+            <li><a href="products.html?category=electronics">Electronics &amp; Sound (4)</a></li>
+            <li><a href="products.html?category=food">Food &amp; Gourmet (3)</a></li>
+            <li><a href="products.html">All 10 Essentials</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Accessibility</h4>
+          <ul class="footer-links-list">
+            <li><a href="javascript:void(0)" onclick="setFontSize('xlarge')">Increase Font Size (A++)</a></li>
+            <li><a href="javascript:void(0)" onclick="toggleHighContrast()">High Contrast Mode</a></li>
+            <li><a href="javascript:void(0)" onclick="narratePageSummary()">Audio Page Readout</a></li>
+            <li><a href="#mainContent">Skip to Main Content</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="a11y-badge-box">
+            <h4 class="footer-heading" style="margin-bottom: 6px; font-size: var(--fs-sm);">Universal Design Purpose</h4>
+            <p>
+              Designed to provide equitable access to users with diverse vision, motor, and cognitive abilities under HCI universal design guidelines.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <span>&copy; 2026 AuraMart Luxury E-Commerce. All rights reserved.</span>
+        <span class="hci-tag">CINEC Campus &bull; Year 3 HCI Group Assignment &bull; Member 01</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const featuredGrid = document.getElementById("featuredProductsGrid");
+      if (featuredGrid) {
+        // Display top 4 featured products on home page
+        const topFeatured = getAllProducts().slice(0, 4);
+        featuredGrid.innerHTML = topFeatured.map(p => createProductCardHTML(p)).join("");
+      }
+
+      // Mobile menu toggle
+      const mobileBtn = document.getElementById("mobileMenuToggle");
+      const navMenu = document.getElementById("primaryNav");
+      if (mobileBtn && navMenu) {
+        mobileBtn.addEventListener("click", () => {
+          const isOpen = navMenu.classList.toggle("is-active");
+          mobileBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+      }
+
+      // Hero Carousel Controller (Matching Image 2 with smooth auto-transition)
+      const slidesTrack = document.getElementById("heroSlidesTrack");
+      const slides = document.querySelectorAll(".hero-slide");
+      const dots = document.querySelectorAll(".slider-dot");
+      const currentCounter = document.getElementById("sliderCurrentNum");
+      const prevBtn = document.getElementById("heroPrevBtn");
+      const nextBtn = document.getElementById("heroNextBtn");
+      const sliderContainer = document.getElementById("heroSlider");
+
+      let currentSlide = 0;
+      let slideInterval = null;
+      const totalSlides = slides.length;
+
+      function showSlide(index) {
+        if (totalSlides === 0) return;
+        currentSlide = (index + totalSlides) % totalSlides;
+
+        if (slidesTrack) {
+          slidesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        slides.forEach((slide, i) => {
+          const isActive = i === currentSlide;
+          slide.classList.toggle("is-active", isActive);
+          slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+
+        dots.forEach((dot, i) => {
+          const isActive = i === currentSlide;
+          dot.classList.toggle("is-active", isActive);
+          dot.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+
+        if (currentCounter) {
+          currentCounter.textContent = String(currentSlide + 1).padStart(2, "0");
+        }
+      }
+
+      function nextSlide() {
+        showSlide(currentSlide + 1);
+      }
+
+      function prevSlide() {
+        showSlide(currentSlide - 1);
+      }
+
+      function startAutoSlide() {
+        stopAutoSlide();
+        slideInterval = setInterval(nextSlide, 5000);
+      }
+
+      function stopAutoSlide() {
+        if (slideInterval) {
+          clearInterval(slideInterval);
+          slideInterval = null;
+        }
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+          prevSlide();
+          startAutoSlide();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          nextSlide();
+          startAutoSlide();
+        });
+      }
+
+      dots.forEach((dot) => {
+        dot.addEventListener("click", () => {
+          const target = parseInt(dot.getAttribute("data-slide"), 10);
+          showSlide(target);
+          startAutoSlide();
+        });
+      });
+
+      // Accessible hover & focus pause (WCAG 2.2.2)
+      if (sliderContainer) {
+        sliderContainer.addEventListener("mouseenter", stopAutoSlide);
+        sliderContainer.addEventListener("mouseleave", startAutoSlide);
+        sliderContainer.addEventListener("focusin", stopAutoSlide);
+        sliderContainer.addEventListener("focusout", startAutoSlide);
+
+        sliderContainer.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft") {
+            prevSlide();
+            startAutoSlide();
+          } else if (e.key === "ArrowRight") {
+            nextSlide();
+            startAutoSlide();
+          }
+        });
+      }
+
+      // Start slider
+      showSlide(0);
+      startAutoSlide();
+    });
+  </script>
+</body>
+</html>

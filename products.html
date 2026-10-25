@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="font-size-normal">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse our luxury catalog of 10 accessible essentials across Clothing, Electronics, and Gourmet Food with instant category filters, sorting, and audio narration." />
+  <title>The Collection | AuraMart Luxury &amp; Accessible E-Commerce</title>
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Accessible Skip Link -->
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+
+  <!-- ARIA Live Region for Screen Reader Announcements -->
+  <div id="a11yLiveAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ==========================================================================
+       TOP ANNOUNCEMENT BAR & ACCESSIBILITY CONTROLS
+       ========================================================================== -->
+  <aside class="site-announcement-strip" aria-label="Announcement & Accessibility Toolbar">
+    <div class="announcement-container">
+      <div class="announcement-promo">
+        Free Shipping on Orders Over $100 &bull; <strong>Universal Design Standards</strong> &bull; 30-Day Easy Returns
+      </div>
+
+      <!-- Accessibility Toolbar Controls -->
+      <div class="a11y-group-wrap">
+        <!-- Font Size Scaling Controls (A, A+, A++) -->
+        <div class="a11y-item">
+          <span class="a11y-label" id="fontCtrlLabel">Text Size:</span>
+          <div class="font-size-controls" role="group" aria-labelledby="fontCtrlLabel">
+            <button type="button" class="font-size-btn active" data-size="normal" aria-pressed="true" title="Default font size (100%)">A</button>
+            <button type="button" class="font-size-btn" data-size="large" aria-pressed="false" title="Large font size (115%)">A+</button>
+            <button type="button" class="font-size-btn" data-size="xlarge" aria-pressed="false" title="Extra Large font size (130%)">A++</button>
+          </div>
+        </div>
+
+        <!-- High Contrast Mode Toggle -->
+        <div class="a11y-item">
+          <button type="button" class="btn-contrast-toggle" aria-pressed="false" title="Toggle High Contrast Mode (WCAG AAA)">
+            <span class="contrast-btn-icon" aria-hidden="true">◐</span>
+            <span class="contrast-btn-label">High Contrast</span>
+          </button>
+        </div>
+
+        <!-- Audio Narration Controls -->
+        <div class="a11y-item">
+          <div class="audio-narration-bar" role="region" aria-label="Audio Reader Controls">
+            <span class="audio-status-pulse" title="Audio Status" aria-hidden="true"></span>
+            <button type="button" id="audioPlaySummaryBtn" class="btn-audio-control" title="Listen to catalog overview">
+              🔊 Read Page
+            </button>
+            <button type="button" id="audioPauseBtn" class="btn-audio-control" style="display: none;" title="Pause audio narration">
+              ⏸ Pause
+            </button>
+            <button type="button" id="audioStopBtn" class="btn-audio-control" style="display: none;" title="Stop audio narration">
+              ⏹ Stop
+            </button>
+            <label for="speechRateSelect" class="sr-only">Voice Speed</label>
+            <select id="speechRateSelect" class="speech-rate-select" title="Voice Speed">
+              <option value="0.8">0.8x</option>
+              <option value="1.0" selected>1.0x</option>
+              <option value="1.2">1.2x</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       MAIN NAVIGATION HEADER (VÉLORA LUXURY STYLE)
+       ========================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <!-- Brand Logo Image (LOGO.png) -->
+      <a href="index.html" class="brand-logo-link" aria-label="Zenvy Home">
+        <img src="images/LOGO.png" alt="Zenvy - Curated for Digital Living" class="brand-logo-img" />
+      </a>
+
+      <!-- Navigation Links (Centered) -->
+      <nav class="nav-menu" id="primaryNav" role="navigation" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link active" aria-current="page">Shop All</a>
+        <a href="javascript:void(0)" onclick="setCategoryFilter('clothing')" class="nav-link">Clothing</a>
+        <a href="javascript:void(0)" onclick="setCategoryFilter('electronics')" class="nav-link">Electronics</a>
+        <a href="javascript:void(0)" onclick="setCategoryFilter('food')" class="nav-link">Gourmet Food</a>
+      </nav>
+
+      <!-- Right Header Actions: Compact Search + Cart + Mobile Menu -->
+      <div class="header-actions-group">
+        <div class="nav-search-wrap" role="search">
+          <div class="search-input-box">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <label for="globalSearchInput" class="sr-only">Search products</label>
+            <input 
+              type="search" 
+              id="globalSearchInput" 
+              class="product-search-input" 
+              placeholder="Search products..." 
+              autocomplete="off" 
+              aria-autocomplete="list"
+              aria-controls="navSearchSuggestions"
+            />
+            <button type="button" class="search-clear-btn" aria-label="Clear search input" title="Clear input">✕</button>
+          </div>
+          <div id="navSearchSuggestions" class="search-suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
+        </div>
+
+        <a 
+          href="cart.html" 
+          class="btn-cart-trigger" 
+          aria-label="Shopping Cart (Member 02 Feature)"
+          title="Shopping Cart (Member 02 Feature)"
+        >
+          <span aria-hidden="true">🛒</span>
+          <span class="btn-text">Cart</span>
+        </a>
+
+        <button 
+          type="button" 
+          class="mobile-menu-btn" 
+          id="mobileMenuToggle" 
+          aria-expanded="false" 
+          aria-controls="primaryNav" 
+          aria-label="Toggle mobile navigation"
+        >
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN CONTENT: CATALOG TOOLBAR, FILTERING & SORTING
+       ========================================================================== -->
+  <main id="mainContent">
+    <section class="catalog-toolbar-section" aria-labelledby="catalogHeading">
+      <div class="catalog-toolbar-container">
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumbs" aria-label="Breadcrumbs">
+          <a href="index.html">Home</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page" style="color: #ffffff; font-weight: 600;">The Collection</span>
+        </nav>
+
+        <div class="section-header-row" style="margin-bottom: 24px;">
+          <div>
+            <span class="section-tag">Curated Catalog</span>
+            <h1 id="catalogHeading" class="section-heading">Explore All 10 Essentials</h1>
+          </div>
+          <span id="resultCount" style="color: var(--primary); font-size: var(--fs-sm); font-weight: 600;">
+            Showing 10 of 10 products
+          </span>
+        </div>
+
+        <!-- Filter Pills & Sorting Row -->
+        <div class="toolbar-controls-grid">
+          <!-- 3 Categories Filter Pills -->
+          <div class="category-filter-pills" role="toolbar" aria-label="Filter products by category">
+            <button type="button" class="category-pill-btn active" data-category="all" aria-pressed="true">
+              All (10)
+            </button>
+            <button type="button" class="category-pill-btn" data-category="clothing" aria-pressed="false">
+              👕 Clothing (3)
+            </button>
+            <button type="button" class="category-pill-btn" data-category="electronics" aria-pressed="false">
+              🎧 Electronics (4)
+            </button>
+            <button type="button" class="category-pill-btn" data-category="food" aria-pressed="false">
+              🍯 Gourmet Food (3)
+            </button>
+          </div>
+
+          <!-- Sort Selector -->
+          <div class="sort-and-meta">
+            <label for="sortSelect" class="sort-label">Sort by:</label>
+            <select id="sortSelect" class="sort-select" aria-label="Sort product catalog">
+              <option value="popularity">Popularity (Most Popular)</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating-high">Customer Rating: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Filter Tags Row -->
+        <div id="activeFiltersRow" class="active-filters-row" style="display: none;" aria-label="Active filters">
+          <!-- Generated dynamically by search.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Grid Section -->
+    <section class="section-wrapper" aria-label="Product Catalog Grid" style="padding-top: 40px;">
+      <div class="products-grid" id="productsGrid" role="region" aria-live="polite">
+        <!-- Products injected dynamically by search.js / products.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       PRODUCT DETAILS ACCESSIBLE MODAL
+       ========================================================================== -->
+  <div 
+    id="productModal" 
+    class="product-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="modalTitle" 
+    aria-hidden="true"
+  >
+    <div class="product-modal-dialog">
+      <button 
+        type="button" 
+        id="closeModalBtn" 
+        class="btn-close-modal" 
+        onclick="closeModal()" 
+        aria-label="Close product details dialog"
+      >
+        ✕
+      </button>
+      <div id="modalProductContent">
+        <!-- Rendered dynamically by products.js -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="brand-logo-link" style="margin-bottom: 8px;">
+            <img src="images/LOGO.png" alt="Zenvy" class="footer-logo-img" />
+          </a>
+          <p>
+            An inclusive e-commerce web platform engineered for CINEC Campus Human-Computer Interaction (HCI) assignment. Adheres strictly to Universal Design standards with persistent storage and multi-modal interaction.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Collections</h4>
+          <ul class="footer-links-list">
+            <li><a href="javascript:void(0)" onclick="setCategoryFilter('clothing')">Clothing &amp; Apparel (3)</a></li>
+            <li><a href="javascript:void(0)" onclick="setCategoryFilter('electronics')">Electronics &amp; Sound (4)</a></li>
+            <li><a href="javascript:void(0)" onclick="setCategoryFilter('food')">Food &amp; Gourmet (3)</a></li>
+            <li><a href="javascript:void(0)" onclick="setCategoryFilter('all')">All 10 Essentials</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Accessibility</h4>
+          <ul class="footer-links-list">
+            <li><a href="javascript:void(0)" onclick="setFontSize('xlarge')">Increase Font Size (A++)</a></li>
+            <li><a href="javascript:void(0)" onclick="toggleHighContrast()">High Contrast Mode</a></li>
+            <li><a href="javascript:void(0)" onclick="narratePageSummary()">Audio Catalog Readout</a></li>
+            <li><a href="#mainContent">Skip to Main Content</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="a11y-badge-box">
+            <h4 class="footer-heading" style="margin-bottom: 6px; font-size: var(--fs-sm);">Universal Design Purpose</h4>
+            <p>
+              Meets diverse user capabilities through customizable font scaling, WCAG AAA high contrast, speech narration, and keyboard focus management.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <span>&copy; 2026 AuraMart Luxury E-Commerce. All rights reserved.</span>
+        <span class="hci-tag">CINEC Campus &bull; Year 3 HCI Group Assignment &bull; Member 01</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const mobileBtn = document.getElementById("mobileMenuToggle");
+      const navMenu = document.getElementById("primaryNav");
+      if (mobileBtn && navMenu) {
+        mobileBtn.addEventListener("click", () => {
+          const isOpen = navMenu.classList.toggle("is-active");
+          mobileBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+      }
+    });
+  </script>
+</body>
+</html>
