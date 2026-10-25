@@ -2381,8 +2381,4 @@ ul {
   .product-card-actions {
     grid-template-columns: 1fr 1fr;
   }
-
-  .btn-add-cart {
-    grid-column: 1 / -1;
-  }
 }
