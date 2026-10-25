@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" class="font-size-normal">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Your Zenvy Shopping Bag. Review luxury essentials, calculate complimentary shipping, apply promotional vouchers, and proceed to accessible WCAG AAA checkout." />
+  <title>Shopping Bag | Zenvy Luxury &amp; Accessible E-Commerce</title>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Accessible Skip Link for Keyboard Navigation -->
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+
+  <!-- ARIA Live Region for Screen Reader Announcements -->
+  <div id="a11yLiveAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ==========================================================================
+       TOP ANNOUNCEMENT BAR & ACCESSIBILITY CONTROLS
+       ========================================================================== -->
+  <aside class="site-announcement-strip" aria-label="Announcement & Accessibility Toolbar">
+    <div class="announcement-container">
+      <div class="announcement-promo">
+        Free Shipping on Orders Over $100 &bull; <strong>Universal Design Standards</strong> &bull; 30-Day Easy Returns
+      </div>
+
+      <!-- Accessibility Toolbar Controls -->
+      <div class="a11y-group-wrap">
+        <!-- Font Size Scaling Controls (A, A+, A++) -->
+        <div class="a11y-item">
+          <span class="a11y-label" id="fontCtrlLabel">Text Size:</span>
+          <div class="font-size-controls" role="group" aria-labelledby="fontCtrlLabel">
+            <button type="button" class="font-size-btn active" data-size="normal" aria-pressed="true" title="Default font size (100%)">A</button>
+            <button type="button" class="font-size-btn" data-size="large" aria-pressed="false" title="Large font size (115%)">A+</button>
+            <button type="button" class="font-size-btn" data-size="xlarge" aria-pressed="false" title="Extra Large font size (130%)">A++</button>
+          </div>
+        </div>
+
+        <!-- High Contrast Mode Toggle -->
+        <div class="a11y-item">
+          <button type="button" class="btn-contrast-toggle" aria-pressed="false" title="Toggle High Contrast Mode (WCAG AAA)">
+            <span class="contrast-btn-icon" aria-hidden="true">◐</span>
+            <span class="contrast-btn-label">High Contrast</span>
+          </button>
+        </div>
+
+        <!-- Audio Narration Controls -->
+        <div class="a11y-item">
+          <div class="audio-narration-bar" role="region" aria-label="Audio Reader Controls">
+            <span class="audio-status-pulse" title="Audio Status" aria-hidden="true"></span>
+            <button type="button" id="audioPlaySummaryBtn" class="btn-audio-control" onclick="narrateCartBreakdown()" title="Listen to shopping cart overview">
+              🔊 Read Cart
+            </button>
+            <button type="button" id="audioPauseBtn" class="btn-audio-control" style="display: none;" title="Pause audio narration">
+              ⏸ Pause
+            </button>
+            <button type="button" id="audioStopBtn" class="btn-audio-control" style="display: none;" title="Stop audio narration">
+              ⏹ Stop
+            </button>
+            <label for="speechRateSelect" class="sr-only">Voice Speed</label>
+            <select id="speechRateSelect" class="speech-rate-select" title="Voice Speed">
+              <option value="0.8">0.8x</option>
+              <option value="1.0" selected>1.0x</option>
+              <option value="1.2">1.2x</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       MAIN NAVIGATION HEADER
+       ========================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <!-- Brand Logo Image -->
+      <a href="index.html" class="brand-logo-link" aria-label="Zenvy Home">
+        <img src="images/LOGO.png" alt="Zenvy - Curated for Digital Living" class="brand-logo-img" />
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="nav-menu" id="primaryNav" role="navigation" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Shop All</a>
+        <a href="products.html?category=clothing" class="nav-link">Clothing</a>
+        <a href="products.html?category=electronics" class="nav-link">Electronics</a>
+        <a href="products.html?category=food" class="nav-link">Gourmet Food</a>
+      </nav>
+
+      <!-- Right Header Actions: Compact Search + Cart + Mobile Menu -->
+      <div class="header-actions-group">
+        <div class="nav-search-wrap" role="search">
+          <div class="search-input-box">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <label for="globalSearchInput" class="sr-only">Search products</label>
+            <input 
+              type="search" 
+              id="globalSearchInput" 
+              class="product-search-input" 
+              placeholder="Search essentials..." 
+              autocomplete="off" 
+              aria-autocomplete="list"
+              aria-controls="navSearchSuggestions"
+            />
+            <button type="button" class="search-clear-btn" aria-label="Clear search input" title="Clear input">✕</button>
+          </div>
+          <div id="navSearchSuggestions" class="search-suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
+        </div>
+
+        <a 
+          href="cart.html" 
+          class="btn-cart-trigger active" 
+          aria-label="Shopping Cart"
+          title="Shopping Cart (Member 02 Feature)"
+        >
+          <span aria-hidden="true">🛒</span>
+          <span class="btn-text">Cart</span>
+          <span class="cart-count-badge" id="cartBadgeCount">0</span>
+        </a>
+
+        <button 
+          type="button" 
+          class="mobile-menu-btn" 
+          id="mobileMenuToggle" 
+          aria-expanded="false" 
+          aria-controls="primaryNav" 
+          aria-label="Toggle mobile navigation"
+        >
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN CONTENT: SHOPPING CART & CHECKOUT
+       ========================================================================== -->
+  <main id="mainContent">
+    <section class="cart-page-section" aria-labelledby="cartMainTitle">
+      <!-- Breadcrumbs -->
+      <nav class="breadcrumbs" aria-label="Breadcrumbs" style="margin-bottom: 20px;">
+        <a href="index.html">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="products.html">Collection</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page" style="color: #ffffff; font-weight: 600;">Shopping Bag</span>
+      </nav>
+
+      <!-- Header Row with Title, Item Count & Order History Button -->
+      <div class="cart-page-header-row">
+        <div class="cart-header-title-wrap">
+          <h1 id="cartMainTitle" class="cart-page-title">Your Shopping Bag</h1>
+          <span class="cart-count-pill" id="cartHeaderCount">0 items</span>
+        </div>
+
+        <div class="cart-header-actions">
+          <button type="button" class="btn-header-ghost" onclick="openOrderHistoryModal()" title="View previous orders saved in browser">
+            <span>📦</span> Order History
+          </button>
+          <button type="button" class="btn-header-ghost" onclick="clearCart(false)" title="Clear all items from bag">
+            <span>🗑</span> Empty Bag
+          </button>
+        </div>
+      </div>
+
+      <!-- Free Shipping Dynamic Progress Meter -->
+      <div id="freeShippingMeter">
+        <!-- Rendered by js/cart.js -->
+      </div>
+
+      <!-- Dynamic Cart Content (Empty State or Populated 2-Column Grid) -->
+      <div id="cartContentArea">
+        <!-- Rendered dynamically by js/cart.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       CHECKOUT MODAL
+       ========================================================================== -->
+  <div 
+    id="checkoutModal" 
+    class="checkout-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="checkoutModalTitle" 
+    aria-hidden="true"
+  >
+    <div class="checkout-modal-dialog">
+      <div class="checkout-header-row">
+        <h2 id="checkoutModalTitle" class="checkout-header-title">Luxury Checkout &amp; Dispatch</h2>
+        <button 
+          type="button" 
+          class="btn-close-modal" 
+          onclick="closeCheckoutModal()" 
+          aria-label="Close checkout modal"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
+        <div class="checkout-form-grid">
+          <!-- Left Column: Shipping & Payment Details -->
+          <div>
+            <!-- Shipping Information -->
+            <div class="checkout-section-box">
+              <div class="checkout-sec-title">
+                <span>1. Delivery Destination</span>
+                <button type="button" class="btn-autofill-test" onclick="fillTestCheckoutData()" title="Fill test credentials for quick grading">
+                  ⚡ Auto-fill Test Data
+                </button>
+              </div>
+
+              <div class="form-group">
+                <label for="checkoutFullName" class="form-label">Full Recipient Name *</label>
+                <input type="text" id="checkoutFullName" class="form-input" required placeholder="e.g. Alexander Vance" />
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="checkoutEmail" class="form-label">Email Address (For Invoice) *</label>
+                  <input type="email" id="checkoutEmail" class="form-input" required placeholder="alexander@example.com" />
+                </div>
+                <div class="form-group">
+                  <label for="checkoutPhone" class="form-label">Mobile Phone *</label>
+                  <input type="tel" id="checkoutPhone" class="form-input" required placeholder="+1 (555) 019-2834" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="checkoutAddress" class="form-label">Delivery Street Address *</label>
+                <input type="text" id="checkoutAddress" class="form-input" required placeholder="Apartment, suite, street address" />
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="checkoutCity" class="form-label">City *</label>
+                  <input type="text" id="checkoutCity" class="form-input" required placeholder="New York" />
+                </div>
+                <div class="form-group">
+                  <label for="checkoutPostal" class="form-label">Postal / ZIP Code *</label>
+                  <input type="text" id="checkoutPostal" class="form-input" required placeholder="10021" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="checkout-section-box">
+              <div class="checkout-sec-title">
+                <span>2. Payment Method</span>
+              </div>
+
+              <div class="payment-radio-group">
+                <label class="payment-radio-card">
+                  <input type="radio" name="paymentMethod" value="card" checked />
+                  <div class="pay-card-label">
+                    <span>💳 Credit or Debit Card</span>
+                    <span style="font-size: 0.72rem; color: #4ade80;">(Instant SSL Verification)</span>
+                  </div>
+                </label>
+
+                <div id="cardFieldsWrap" style="padding: 10px 0 6px;">
+                  <div class="form-group">
+                    <label for="checkoutCardNum" class="form-label">Card Number</label>
+                    <input type="text" id="checkoutCardNum" class="form-input" placeholder="4242 •••• •••• 4242" />
+                  </div>
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="checkoutCardExpiry" class="form-label">Expiry (MM/YY)</label>
+                      <input type="text" id="checkoutCardExpiry" class="form-input" placeholder="12/28" />
+                    </div>
+                    <div class="form-group">
+                      <label for="checkoutCardCvv" class="form-label">CVV Security Code</label>
+                      <input type="password" id="checkoutCardCvv" class="form-input" maxlength="4" placeholder="888" />
+                    </div>
+                  </div>
+                </div>
+
+                <label class="payment-radio-card">
+                  <input type="radio" name="paymentMethod" value="cod" />
+                  <div class="pay-card-label">
+                    <span>💵 Cash on Delivery (COD)</span>
+                  </div>
+                </label>
+
+                <label class="payment-radio-card">
+                  <input type="radio" name="paymentMethod" value="paypal" />
+                  <div class="pay-card-label">
+                    <span>🌐 Digital Wallet / PayPal</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Special Instructions / Notes -->
+            <div class="checkout-section-box" style="margin-bottom: 0;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="checkoutNotes" class="form-label">Delivery Notes / Sensory Packaging Preferences (Optional)</label>
+                <input type="text" id="checkoutNotes" class="form-input" placeholder="e.g. Leave with doorman, include tactile Braille label" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Order Items Preview & Place Order -->
+          <div class="checkout-summary-sidebar">
+            <div>
+              <h3 style="font-family: var(--font-serif); font-size: var(--fs-md); margin-bottom: 14px; color: #ffffff;">Order Preview</h3>
+              <div id="checkoutItemsSummary" class="checkout-items-preview-list">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <div>
+              <div class="checkout-total-box">
+                <span class="chk-total-label">Total to Charge:</span>
+                <span id="checkoutGrandTotal" class="chk-total-val">$0.00</span>
+              </div>
+
+              <button type="submit" id="btnConfirmOrder" class="btn-confirm-order">
+                🔒 Confirm &amp; Place Bespoke Order
+              </button>
+
+              <p style="font-size: 0.70rem; color: var(--text-muted); text-align: center; margin-top: 10px;">
+                By placing this order, data will be stored securely in your browser's localStorage invoice register.
+              </p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       ORDER CONFIRMATION & INVOICE MODAL
+       ========================================================================== -->
+  <div 
+    id="orderSuccessModal" 
+    class="checkout-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="successModalTitle" 
+    aria-hidden="true"
+  >
+    <div class="checkout-modal-dialog" style="max-width: 780px;">
+      <button 
+        type="button" 
+        class="btn-close-modal" 
+        onclick="closeOrderSuccessModal()" 
+        aria-label="Close invoice dialog"
+      >
+        ✕
+      </button>
+      <div id="orderSuccessContent">
+        <!-- Rendered by js/cart.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       ORDER HISTORY MODAL
+       ========================================================================== -->
+  <div 
+    id="orderHistoryModal" 
+    class="checkout-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="historyModalTitle" 
+    aria-hidden="true"
+  >
+    <div class="checkout-modal-dialog" style="max-width: 800px;">
+      <div class="checkout-header-row">
+        <h2 id="historyModalTitle" class="checkout-header-title">Your Order History (localStorage)</h2>
+        <button 
+          type="button" 
+          class="btn-close-modal" 
+          onclick="closeOrderHistoryModal()" 
+          aria-label="Close order history"
+        >
+          ✕
+        </button>
+      </div>
+      <div id="orderHistoryContent">
+        <!-- Rendered by js/cart.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       CLEAR CART CONFIRMATION MODAL
+       ========================================================================== -->
+  <div 
+    id="clearCartModal" 
+    class="checkout-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="clearModalTitle" 
+    aria-hidden="true"
+  >
+    <div class="checkout-modal-dialog" style="max-width: 480px; text-align: center;">
+      <div style="font-size: 2.5rem; margin-bottom: 12px;" aria-hidden="true">🗑</div>
+      <h3 id="clearModalTitle" style="font-family: var(--font-serif); font-size: var(--fs-xl); color: #ffffff; margin-bottom: 10px;">Clear Shopping Bag?</h3>
+      <p style="font-size: var(--fs-sm); color: var(--text-secondary); margin-bottom: 24px;">
+        Are you sure you want to remove all items and promotional vouchers from your shopping bag?
+      </p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button type="button" class="btn-clear-cart" style="padding: 10px 20px;" onclick="closeClearCartModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn-primary-luxury" style="padding: 10px 24px; background: #ef4444;" onclick="clearCart(true)">
+          Yes, Clear All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PRODUCT DETAILS ACCESSIBLE MODAL (FOR QUICK VIEW)
+       ========================================================================== -->
+  <div 
+    id="productModal" 
+    class="product-modal-backdrop" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="modalTitle" 
+    aria-hidden="true"
+  >
+    <div class="product-modal-dialog">
+      <button 
+        type="button" 
+        id="closeModalBtn" 
+        class="btn-close-modal" 
+        onclick="closeModal()" 
+        aria-label="Close product details dialog"
+      >
+        ✕
+      </button>
+      <div id="modalProductContent">
+        <!-- Rendered dynamically by products.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="brand-logo-link" style="margin-bottom: 8px;">
+            <img src="images/LOGO.png" alt="Zenvy" class="footer-logo-img" />
+          </a>
+          <p>
+            An inclusive luxury e-commerce web platform engineered for modern digital living. Adheres strictly to Universal Design standards with accessible multi-modal interaction.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Collections</h4>
+          <ul class="footer-links-list">
+            <li><a href="products.html?category=clothing">Clothing &amp; Apparel (3)</a></li>
+            <li><a href="products.html?category=electronics">Electronics &amp; Sound (4)</a></li>
+            <li><a href="products.html?category=food">Food &amp; Gourmet (3)</a></li>
+            <li><a href="products.html">All 10 Essentials</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Accessibility</h4>
+          <ul class="footer-links-list">
+            <li><a href="javascript:void(0)" onclick="setFontSize('xlarge')">Increase Font Size (A++)</a></li>
+            <li><a href="javascript:void(0)" onclick="toggleHighContrast()">High Contrast Mode</a></li>
+            <li><a href="javascript:void(0)" onclick="narrateCartBreakdown()">Audio Cart Readout</a></li>
+            <li><a href="#mainContent">Skip to Main Content</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="a11y-badge-box">
+            <h4 class="footer-heading" style="margin-bottom: 6px; font-size: var(--fs-sm);">Universal Design Purpose</h4>
+            <p>
+              Meets diverse user capabilities through customizable font scaling, WCAG AAA high contrast, speech narration, and keyboard focus management.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <span>&copy; 2026 Zenvy Luxury E-Commerce. All rights reserved.</span>
+        <span class="hci-tag">HCI Member 02: Shopping Cart &amp; Order Management</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Mobile menu toggle
+      const mobileBtn = document.getElementById("mobileMenuToggle");
+      const navMenu = document.getElementById("primaryNav");
+      if (mobileBtn && navMenu) {
+        mobileBtn.addEventListener("click", () => {
+          const isOpen = navMenu.classList.toggle("is-active");
+          mobileBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        });
+      }
+    });
+  </script>
+</body>
+</html>

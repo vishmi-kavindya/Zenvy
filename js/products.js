@@ -458,6 +458,16 @@ function createProductCardHTML(product) {
           >
             <span aria-hidden="true">👁</span> Details
           </button>
+
+          <button 
+            type="button" 
+            class="btn-add-cart" 
+            onclick="if(typeof addToCart==='function'){ addToCart('${product.id}', 1, event); }"
+            aria-label="Add ${product.name} to shopping bag"
+            title="Add to Shopping Bag"
+          >
+            <span aria-hidden="true">🛒</span> Add
+          </button>
         </div>
       </div>
     </article>
@@ -527,6 +537,22 @@ function openProductModal(productId) {
             ● ${product.inStock ? `In Stock (${product.stockCount} units available)` : 'Out of Stock'}
           </span>
           <span class="sku-text">Product Code: AUR-${product.id.toUpperCase()}</span>
+        </div>
+
+        <div class="modal-cart-action-row" style="display:flex; gap:12px; align-items:center; margin-bottom:14px; width:100%;">
+          <div class="quantity-selector" role="group" aria-label="Select quantity">
+            <button type="button" class="btn-qty" onclick="if(typeof adjustModalQty==='function') adjustModalQty(-1)" aria-label="Decrease quantity">−</button>
+            <input type="number" id="modalQuantityInput" value="1" min="1" max="${product.stockCount}" aria-label="Quantity" readonly />
+            <button type="button" class="btn-qty" onclick="if(typeof adjustModalQty==='function') adjustModalQty(1)" aria-label="Increase quantity">+</button>
+          </div>
+          <button 
+            type="button" 
+            class="btn-modal-add-cart" 
+            onclick="if(typeof addModalItemToCart==='function'){ addModalItemToCart('${product.id}'); } else if(typeof addToCart==='function'){ addToCart('${product.id}', 1); closeModal(); }"
+            aria-label="Add ${product.name} to shopping bag"
+          >
+            <span>🛒</span> Add to Bag
+          </button>
         </div>
 
         <div class="modal-actions-box">
