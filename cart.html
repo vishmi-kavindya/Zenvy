@@ -22,7 +22,7 @@
   <aside class="site-announcement-strip" aria-label="Announcement & Accessibility Toolbar">
     <div class="announcement-container">
       <div class="announcement-promo">
-        Free Shipping on Orders Over $100 &bull; <strong>Universal Design Standards</strong> &bull; 30-Day Easy Returns
+        Free Islandwide Delivery on Orders Over Rs. 10,000 &bull; <strong>Islandwide Cash on Delivery (COD)</strong> &bull; 100% Genuine Sri Lankan Warranty
       </div>
 
       <!-- Accessibility Toolbar Controls -->
@@ -216,33 +216,33 @@
 
               <div class="form-group">
                 <label for="checkoutFullName" class="form-label">Full Recipient Name *</label>
-                <input type="text" id="checkoutFullName" class="form-input" required placeholder="e.g. Alexander Vance" />
+                <input type="text" id="checkoutFullName" class="form-input" required placeholder="e.g. Kavinda Perera" />
               </div>
 
               <div class="form-row-2">
                 <div class="form-group">
                   <label for="checkoutEmail" class="form-label">Email Address (For Invoice) *</label>
-                  <input type="email" id="checkoutEmail" class="form-input" required placeholder="alexander@example.com" />
+                  <input type="email" id="checkoutEmail" class="form-input" required placeholder="kavinda.perera@gmail.com" />
                 </div>
                 <div class="form-group">
-                  <label for="checkoutPhone" class="form-label">Mobile Phone *</label>
-                  <input type="tel" id="checkoutPhone" class="form-input" required placeholder="+1 (555) 019-2834" />
+                  <label for="checkoutPhone" class="form-label">Mobile Phone (Sri Lanka) *</label>
+                  <input type="tel" id="checkoutPhone" class="form-input" required placeholder="e.g. +94 77 123 4567" />
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="checkoutAddress" class="form-label">Delivery Street Address *</label>
-                <input type="text" id="checkoutAddress" class="form-input" required placeholder="Apartment, suite, street address" />
+                <input type="text" id="checkoutAddress" class="form-input" required placeholder="e.g. No. 45/2, Galle Road, Bambalapitiya" />
               </div>
 
               <div class="form-row-2">
                 <div class="form-group">
-                  <label for="checkoutCity" class="form-label">City *</label>
-                  <input type="text" id="checkoutCity" class="form-input" required placeholder="New York" />
+                  <label for="checkoutCity" class="form-label">City / Town *</label>
+                  <input type="text" id="checkoutCity" class="form-input" required placeholder="e.g. Colombo, Kandy, Galle" />
                 </div>
                 <div class="form-group">
-                  <label for="checkoutPostal" class="form-label">Postal / ZIP Code *</label>
-                  <input type="text" id="checkoutPostal" class="form-input" required placeholder="10021" />
+                  <label for="checkoutPostal" class="form-label">Postal Code *</label>
+                  <input type="text" id="checkoutPostal" class="form-input" required placeholder="e.g. 00400" />
                 </div>
               </div>
             </div>
@@ -257,8 +257,8 @@
                 <label class="payment-radio-card">
                   <input type="radio" name="paymentMethod" value="card" checked />
                   <div class="pay-card-label">
-                    <span>💳 Credit or Debit Card</span>
-                    <span style="font-size: 0.72rem; color: #4ade80;">(Instant SSL Verification)</span>
+                    <span>💳 Credit or Debit Card (Visa / MasterCard)</span>
+                    <span style="font-size: 0.72rem; color: #4ade80;">(Instant 3D Secure LKR)</span>
                   </div>
                 </label>
 
@@ -282,14 +282,24 @@
                 <label class="payment-radio-card">
                   <input type="radio" name="paymentMethod" value="cod" />
                   <div class="pay-card-label">
-                    <span>💵 Cash on Delivery (COD)</span>
+                    <span>💵 Cash on Delivery (Islandwide COD)</span>
+                    <span style="font-size: 0.72rem; color: var(--primary);">(Pay cash upon delivery)</span>
                   </div>
                 </label>
 
                 <label class="payment-radio-card">
-                  <input type="radio" name="paymentMethod" value="paypal" />
+                  <input type="radio" name="paymentMethod" value="koko" />
                   <div class="pay-card-label">
-                    <span>🌐 Digital Wallet / PayPal</span>
+                    <span>📱 Koko / Mintpay (Buy Now Pay Later)</span>
+                    <span style="font-size: 0.72rem; color: #4ade80;">(3 Interest-Free Installments)</span>
+                  </div>
+                </label>
+
+                <label class="payment-radio-card">
+                  <input type="radio" name="paymentMethod" value="lankaqr" />
+                  <div class="pay-card-label">
+                    <span>🏦 LankaQR / FriMi / Bank Transfer</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">(Scan QR &amp; Pay)</span>
                   </div>
                 </label>
               </div>
@@ -298,8 +308,8 @@
             <!-- Special Instructions / Notes -->
             <div class="checkout-section-box" style="margin-bottom: 0;">
               <div class="form-group" style="margin-bottom: 0;">
-                <label for="checkoutNotes" class="form-label">Delivery Notes / Sensory Packaging Preferences (Optional)</label>
-                <input type="text" id="checkoutNotes" class="form-input" placeholder="e.g. Leave with doorman, include tactile Braille label" />
+                <label for="checkoutNotes" class="form-label">Delivery Notes / Special Instructions (Optional)</label>
+                <input type="text" id="checkoutNotes" class="form-input" placeholder="e.g. Please call before delivery, leave with apartment security" />
               </div>
             </div>
           </div>
@@ -316,7 +326,7 @@
             <div>
               <div class="checkout-total-box">
                 <span class="chk-total-label">Total to Charge:</span>
-                <span id="checkoutGrandTotal" class="chk-total-val">$0.00</span>
+                <span id="checkoutGrandTotal" class="chk-total-val">Rs. 0.00</span>
               </div>
 
               <button type="submit" id="btnConfirmOrder" class="btn-confirm-order">

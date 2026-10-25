@@ -14,6 +14,15 @@
  *   5. 'zenvy_shipping': selected delivery speed
  */
 
+// Helper for currency formatting
+function formatCurrency(amount) {
+  const num = Number(amount) || 0;
+  return "Rs. " + num.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+if (typeof window !== "undefined") {
+  window.formatCurrency = formatCurrency;
+}
+
 // Storage Keys
 const CART_STORAGE_KEY = "zenvy_cart";
 const LEGACY_CART_KEY = "auramart_cart";
@@ -22,27 +31,27 @@ const ORDERS_STORAGE_KEY = "zenvy_orders";
 const PROMO_STORAGE_KEY = "zenvy_promo";
 const SHIPPING_STORAGE_KEY = "zenvy_shipping";
 
-// Shipping Rates Configuration
+// Shipping Rates Configuration (Sri Lankan Couriers)
 const SHIPPING_OPTIONS = {
   standard: {
     id: "standard",
-    name: "Standard Luxury Delivery",
-    estimate: "3-5 Business Days",
-    price: 9.99,
-    freeThreshold: 100.00
+    name: "Standard Islandwide Delivery (PromptX / Domex)",
+    estimate: "2–3 Business Days",
+    price: 450.00,
+    freeThreshold: 10000.00
   },
   express: {
     id: "express",
-    name: "Priority Air Courier",
-    estimate: "1-2 Business Days",
-    price: 14.99,
+    name: "Colombo & Greater Suburbs Express",
+    estimate: "Next Day Guaranteed",
+    price: 750.00,
     freeThreshold: null
   },
   overnight: {
     id: "overnight",
-    name: "White-Glove VIP Delivery",
-    estimate: "Next Day Guaranteed",
-    price: 24.99,
+    name: "VIP Same-Day Priority Dispatch",
+    estimate: "Within 6–12 Hours (Colombo 01–15)",
+    price: 1200.00,
     freeThreshold: null
   }
 };
@@ -51,8 +60,8 @@ const SHIPPING_OPTIONS = {
 const PROMO_VOUCHERS = {
   "ZENVY10": { code: "ZENVY10", type: "percent", value: 10, description: "10% Off Entire Order" },
   "AURA20":  { code: "AURA20",  type: "percent", value: 20, description: "20% Off Luxury VIP Voucher" },
-  "WELCOME": { code: "WELCOME", type: "fixed",   value: 15, minSpend: 50, description: "$15 Off Orders Over $50" },
-  "FREESHIP":{ code: "FREESHIP",type: "shipping",value: 100, description: "Free Complimentary Shipping" }
+  "WELCOME": { code: "WELCOME", type: "fixed",   value: 1500, minSpend: 8000, description: "Rs. 1,500 Off Orders Over Rs. 8,000" },
+  "FREESHIP":{ code: "FREESHIP",type: "shipping",value: 100, description: "Free Islandwide Delivery" }
 };
 
 /* ==========================================================================
@@ -69,6 +78,13 @@ function getStoredProducts() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // Auto-migrate from old USD prices (< 500) to new Sri Lankan Rupee catalog
+        if (parsed[0] && parsed[0].id === "prod-1" && parsed[0].price < 500) {
+          if (typeof PRODUCTS_DATA !== "undefined" && Array.isArray(PRODUCTS_DATA)) {
+            saveStoredProducts(PRODUCTS_DATA);
+            return PRODUCTS_DATA;
+          }
+        }
         return parsed;
       }
     }
@@ -144,15 +160,14 @@ function deductInventoryStock(orderItems) {
 
 /**
  * Retrieve cart items array from localStorage
+ * Checks 'zenvy_cart', 'cart', and legacy keys for maximum compatibility
  * @returns {Array<{id: string, quantity: number, addedAt: number}>}
  */
 function getCart() {
   try {
-    let raw = localStorage.getItem(CART_STORAGE_KEY);
-    if (!raw) {
-      // Check legacy key
-      raw = localStorage.getItem(LEGACY_CART_KEY);
-    }
+    let raw = localStorage.getItem(CART_STORAGE_KEY) || 
+              localStorage.getItem("cart") || 
+              localStorage.getItem(LEGACY_CART_KEY);
     if (raw) {
       const items = JSON.parse(raw);
       if (Array.isArray(items)) {
@@ -166,13 +181,15 @@ function getCart() {
 }
 
 /**
- * Save cart items to localStorage and synchronize UI badges
+ * Save cart items to localStorage across all common keys and synchronize UI badges
+ * Persists to both 'zenvy_cart' and 'cart'
  * @param {Array} cart 
  */
 function saveCart(cart) {
   try {
     const cleanCart = cart.filter(item => item && item.id && item.quantity > 0);
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cleanCart));
+    localStorage.setItem("cart", JSON.stringify(cleanCart));
     localStorage.setItem(LEGACY_CART_KEY, JSON.stringify(cleanCart));
   } catch (e) {
     console.error("Failed to save cart to localStorage:", e);
@@ -180,11 +197,15 @@ function saveCart(cart) {
   updateCartBadges();
 }
 
+/* ==========================================================================
+   FEATURE 2: ADD PRODUCTS TO CART
+   ========================================================================== */
+
 /**
- * Add product to cart with optional quantity
- * @param {string} productId 
- * @param {number} quantity 
- * @param {Event} [event] 
+ * Add a product to the cart or increment its quantity if already present
+ * @param {string} productId - Product unique identifier
+ * @param {number} quantity - Quantity to add (default 1)
+ * @param {Event} [event] - Optional click event for micro-animations
  */
 function addToCart(productId, quantity = 1, event = null) {
   if (event) {
@@ -213,7 +234,7 @@ function addToCart(productId, quantity = 1, event = null) {
   // Stock availability check
   if (product.stockCount && newQuantity > product.stockCount) {
     newQuantity = product.stockCount;
-    showToast(`Maximum available stock (${product.stockCount}) added`, "warning");
+    showToast(`Maximum available stock (${product.stockCount}) added for ${product.name}`, "warning");
   }
 
   if (existingIndex > -1) {
@@ -248,8 +269,49 @@ function addToCart(productId, quantity = 1, event = null) {
   }
 }
 
+/* ==========================================================================
+   FEATURE 3: INCREASE AND DECREASE QUANTITIES
+   ========================================================================== */
+
 /**
- * Update quantity of a specific cart item
+ * 3A. Increase quantity of a product in the cart
+ * Checks available stock count before incrementing.
+ * @param {string} productId 
+ */
+function increaseQuantity(productId) {
+  const cart = getCart();
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+
+  const product = getProductDataById(productId);
+  if (product && product.stockCount && item.quantity >= product.stockCount) {
+    showToast(`Maximum stock limit reached (${product.stockCount}) for ${product.name}`, "warning");
+    return;
+  }
+
+  updateCartQuantity(productId, item.quantity + 1);
+}
+
+/**
+ * 3B. Decrease quantity of a product in the cart
+ * If quantity drops to 1 and user decreases, removes item from cart.
+ * @param {string} productId 
+ */
+function decreaseQuantity(productId) {
+  const cart = getCart();
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+
+  if (item.quantity <= 1) {
+    removeFromCart(productId);
+  } else {
+    updateCartQuantity(productId, item.quantity - 1);
+  }
+}
+
+/**
+ * 3C. Update quantity of a specific cart item directly
+ * Validates input, checks inventory constraints, and persists changes.
  * @param {string} productId 
  * @param {number} newQuantity 
  */
@@ -279,8 +341,13 @@ function updateCartQuantity(productId, newQuantity) {
   }
 }
 
+/* ==========================================================================
+   FEATURE 4: REMOVE PRODUCTS FROM THE CART
+   ========================================================================== */
+
 /**
- * Remove an item from the cart
+ * Remove a product from the shopping cart
+ * Deletes item from localStorage array, updates UI, and updates badge count.
  * @param {string} productId 
  */
 function removeFromCart(productId) {
@@ -336,8 +403,8 @@ function closeClearCartModal() {
  */
 function seedDemoCart() {
   const demoItems = [
-    { id: "prod-1", quantity: 1 }, // Headphones
-    { id: "prod-8", quantity: 2 }  // Raw Wildflower Honey
+    { id: "prod-1", quantity: 1 }, // Aura Luxe ANC Headphones (Rs. 28,500.00)
+    { id: "prod-8", quantity: 2 }  // Ceylon Wild Bee Pure Forest Honey (Rs. 2,450.00 x 2)
   ];
   saveCart(demoItems);
   showToast("Loaded sample luxury items into your shopping bag!", "success");
@@ -430,7 +497,7 @@ function applyPromoVoucher(inputCode) {
 
   const totals = calculateCartTotals();
   if (voucher.minSpend && totals.subtotal < voucher.minSpend) {
-    showToast(`Code "${code}" requires minimum subtotal of $${voucher.minSpend.toFixed(2)}`, "warning");
+    showToast(`Code "${code}" requires minimum subtotal of ${formatCurrency(voucher.minSpend)}`, "warning");
     return;
   }
 
@@ -468,8 +535,36 @@ function removePromoVoucher(showNotice = true) {
   }
 }
 
+/* ==========================================================================
+   FEATURE 5: CALCULATE SUBTOTAL AND TOTAL
+   ========================================================================== */
+
 /**
- * Comprehensive Cart Totals Calculation
+ * 5A. Calculate Subtotal
+ * Computes the total cost of all product items (sum of unit_price * quantity)
+ * @returns {number} Subtotal
+ */
+function calculateSubtotal() {
+  const cart = getCart();
+  return cart.reduce((total, cartItem) => {
+    const product = getProductDataById(cartItem.id);
+    return total + (product ? product.price * cartItem.quantity : 0);
+  }, 0);
+}
+
+/**
+ * 5B. Calculate Grand Total
+ * Computes the total payable: Subtotal minus discounts plus shipping and tax
+ * @returns {number} Grand Total
+ */
+function calculateTotal() {
+  const totals = calculateCartTotals();
+  return totals.grandTotal;
+}
+
+/**
+ * 5C. Comprehensive Cart Totals Calculation
+ * Computes item line totals, subtotal, voucher discounts, shipping, tax, and grand total.
  * @returns {Object} subtotal, discount, shipping, tax, grandTotal, etc.
  */
 function calculateCartTotals() {
@@ -496,8 +591,9 @@ function calculateCartTotals() {
   const shippingOption = getSelectedShippingOption();
   let shippingCost = shippingOption.price;
 
-  // Free standard shipping if subtotal >= 100
-  if (shippingOption.id === "standard" && subtotal >= (shippingOption.freeThreshold || 100)) {
+  // Free standard shipping if subtotal >= freeThreshold (Rs. 10,000)
+  const freeThresholdLimit = shippingOption.freeThreshold || 10000.00;
+  if (shippingOption.id === "standard" && subtotal >= freeThresholdLimit) {
     shippingCost = 0.00;
   }
 
@@ -516,15 +612,15 @@ function calculateCartTotals() {
     }
   }
 
-  // Estimated Tax: 5% of discounted subtotal
+  // Estimated Tax: 5% VAT of discounted subtotal
   const taxableAmount = Math.max(0, subtotal - discountAmount);
   const taxAmount = subtotal > 0 ? taxableAmount * 0.05 : 0;
 
   // Grand Total
   const grandTotal = Math.max(0, taxableAmount + shippingCost + taxAmount);
 
-  // Free Shipping Threshold Progress
-  const standardThreshold = 100.00;
+  // Free Shipping Threshold Progress (Rs. 10,000)
+  const standardThreshold = SHIPPING_OPTIONS.standard.freeThreshold || 10000.00;
   const freeShippingProgress = Math.min(100, (subtotal / standardThreshold) * 100);
   const freeShippingShortfall = Math.max(0, standardThreshold - subtotal);
   const isFreeShippingUnlocked = subtotal >= standardThreshold;
@@ -648,7 +744,7 @@ function renderCartPage() {
           <!-- Subtotal -->
           <div class="summary-line">
             <span class="summary-label">Subtotal (${totals.itemCount} items)</span>
-            <span class="summary-val">$${totals.subtotal.toFixed(2)}</span>
+            <span class="summary-val">${formatCurrency(totals.subtotal)}</span>
           </div>
 
           <!-- Promo Voucher Section -->
@@ -690,18 +786,18 @@ function renderCartPage() {
           ${totals.discountAmount > 0 ? `
             <div class="summary-line discount-line">
               <span class="summary-label">Voucher Savings (${totals.promo.code})</span>
-              <span class="summary-val discount-val">−$${totals.discountAmount.toFixed(2)}</span>
+              <span class="summary-val discount-val">−${formatCurrency(totals.discountAmount)}</span>
             </div>
           ` : ""}
 
           <!-- Shipping Speed Selector -->
           <div class="summary-shipping-block">
-            <span class="summary-label-sub" id="shippingOptionsLabel">Delivery Speed</span>
+            <span class="summary-label-sub" id="shippingOptionsLabel">Delivery Speed (Islandwide)</span>
             <div class="shipping-options-list" role="radiogroup" aria-labelledby="shippingOptionsLabel">
               ${Object.values(SHIPPING_OPTIONS).map(opt => {
                 const isSelected = totals.shippingOption.id === opt.id;
-                const isFree = opt.id === "standard" && totals.subtotal >= 100;
-                const costDisplay = isFree ? "FREE" : `$${opt.price.toFixed(2)}`;
+                const isFree = opt.id === "standard" && totals.subtotal >= (opt.freeThreshold || 10000.00);
+                const costDisplay = isFree ? "FREE" : formatCurrency(opt.price);
                 return `
                   <label class="shipping-option-card ${isSelected ? 'is-selected' : ''}">
                     <input 
@@ -726,8 +822,8 @@ function renderCartPage() {
 
           <!-- Sales Tax -->
           <div class="summary-line">
-            <span class="summary-label">Estimated Tax (5% Standard)</span>
-            <span class="summary-val">$${totals.taxAmount.toFixed(2)}</span>
+            <span class="summary-label">Estimated VAT (5% Standard)</span>
+            <span class="summary-val">${formatCurrency(totals.taxAmount)}</span>
           </div>
 
           <div class="summary-divider"></div>
@@ -736,9 +832,9 @@ function renderCartPage() {
           <div class="summary-total-line">
             <div>
               <span class="summary-total-label">Grand Total</span>
-              <span class="summary-tax-note">Includes all luxury duties &amp; delivery</span>
+              <span class="summary-tax-note">Includes all luxury duties &amp; islandwide delivery</span>
             </div>
-            <span class="summary-total-val">$${totals.grandTotal.toFixed(2)}</span>
+            <span class="summary-total-val">${formatCurrency(totals.grandTotal)}</span>
           </div>
 
           <!-- Primary Checkout Button -->
@@ -746,7 +842,7 @@ function renderCartPage() {
             type="button" 
             class="btn-checkout" 
             onclick="openCheckoutModal()"
-            aria-label="Proceed to Secure Checkout. Total $${totals.grandTotal.toFixed(2)}"
+            aria-label="Proceed to Secure Checkout. Total ${formatCurrency(totals.grandTotal)}"
           >
             <span class="lock-icon" aria-hidden="true">🔒</span>
             <span class="btn-text">Proceed to Checkout</span>
@@ -811,7 +907,7 @@ function renderFreeShippingMeterHTML(totals) {
       <div class="free-shipping-box is-unlocked" role="status" aria-live="polite">
         <div class="shipping-meter-text">
           <span class="shipping-meter-icon">🎉</span>
-          <span><strong>Complimentary Luxury Shipping Unlocked!</strong> You qualify for free Standard Delivery on this order.</span>
+          <span><strong>Complimentary Islandwide Shipping Unlocked!</strong> You qualify for free Standard Delivery on this order.</span>
         </div>
         <div class="progress-bar-track">
           <div class="progress-bar-fill unlocked" style="width: 100%;"></div>
@@ -824,7 +920,7 @@ function renderFreeShippingMeterHTML(totals) {
     <div class="free-shipping-box" role="status" aria-live="polite">
       <div class="shipping-meter-text">
         <span class="shipping-meter-icon">✈</span>
-        <span>Add <strong>$${totals.freeShippingShortfall.toFixed(2)}</strong> more of luxury essentials to unlock <strong>Free Standard Delivery</strong>!</span>
+        <span>Add <strong>${formatCurrency(totals.freeShippingShortfall)}</strong> more of luxury essentials to unlock <strong>Free Islandwide Delivery</strong>!</span>
       </div>
       <div class="progress-bar-track" aria-label="Free shipping progress" role="progressbar" aria-valuenow="${Math.round(totals.freeShippingProgress)}" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar-fill" style="width: ${totals.freeShippingProgress}%;"></div>
@@ -905,8 +1001,8 @@ function renderCartItemRowHTML(item) {
       <div class="cart-col-price">
         <span class="col-mobile-label">Price:</span>
         <div class="unit-price-wrap">
-          <span class="item-unit-price">$${p.price.toFixed(2)}</span>
-          ${p.originalPrice ? `<span class="item-orig-price">$${p.originalPrice.toFixed(2)}</span>` : ""}
+          <span class="item-unit-price">${formatCurrency(p.price)}</span>
+          ${p.originalPrice ? `<span class="item-orig-price">${formatCurrency(p.originalPrice)}</span>` : ""}
         </div>
       </div>
 
@@ -917,9 +1013,9 @@ function renderCartItemRowHTML(item) {
           <button 
             type="button" 
             class="btn-qty-step" 
-            onclick="updateCartQuantity('${p.id}', ${item.quantity - 1})"
-            aria-label="Decrease quantity"
-            ${item.quantity <= 1 ? 'title="Remove item from bag"' : ''}
+            onclick="decreaseQuantity('${p.id}')"
+            aria-label="Decrease quantity for ${p.name}"
+            title="Decrease quantity"
           >−</button>
           <input 
             type="number" 
@@ -933,9 +1029,9 @@ function renderCartItemRowHTML(item) {
           <button 
             type="button" 
             class="btn-qty-step" 
-            onclick="updateCartQuantity('${p.id}', ${item.quantity + 1})"
-            aria-label="Increase quantity"
-            ${item.quantity >= (p.stockCount || 99) ? 'disabled title="Max stock reached"' : ''}
+            onclick="increaseQuantity('${p.id}')"
+            aria-label="Increase quantity for ${p.name}"
+            ${item.quantity >= (p.stockCount || 99) ? 'disabled title="Max stock reached"' : 'title="Increase quantity"'}
           >+</button>
         </div>
       </div>
@@ -943,7 +1039,7 @@ function renderCartItemRowHTML(item) {
       <!-- Line Total -->
       <div class="cart-col-total">
         <span class="col-mobile-label">Total:</span>
-        <span class="item-line-total">$${item.lineTotal.toFixed(2)}</span>
+        <span class="item-line-total">${formatCurrency(item.lineTotal)}</span>
       </div>
 
       <!-- Remove Action -->
@@ -977,20 +1073,32 @@ function renderCartRecommendationsHTML(existingIds) {
 
   return candidates.map(p => `
     <div class="rec-mini-card">
-      <img src="${p.image}" alt="${p.name}" class="rec-img" onerror="this.src='images/denim.jpeg';" />
+      <img 
+        src="${p.image}" 
+        alt="${p.name}" 
+        class="rec-img" 
+        onerror="this.src='images/denim.jpeg';" 
+        onclick="if(typeof openProductModal==='function') openProductModal('${p.id}')"
+        style="cursor: pointer;"
+        title="View details for ${p.name}"
+      />
       <div class="rec-info">
-        <h4 class="rec-name">${p.name}</h4>
-        <span class="rec-price">$${p.price.toFixed(2)}</span>
+        <h4 class="rec-name" title="${p.name}">
+          <a href="javascript:void(0)" onclick="if(typeof openProductModal==='function') openProductModal('${p.id}')">${p.name}</a>
+        </h4>
+        <div class="rec-bottom-row">
+          <span class="rec-price">${formatCurrency(p.price)}</span>
+          <button 
+            type="button" 
+            class="btn-rec-add" 
+            onclick="addToCart('${p.id}', 1, event)"
+            aria-label="Add ${p.name} to bag"
+            title="Quick add to bag"
+          >
+            + Add
+          </button>
+        </div>
       </div>
-      <button 
-        type="button" 
-        class="btn-rec-add" 
-        onclick="addToCart('${p.id}', 1, event)"
-        aria-label="Add ${p.name} to bag"
-        title="Quick add to bag"
-      >
-        + Add
-      </button>
     </div>
   `).join("");
 }
@@ -1011,11 +1119,11 @@ function narrateCartBreakdown() {
     return;
   }
 
-  const itemsSpoken = totals.items.map(i => `${i.quantity} of ${i.product.name} at ${i.product.price} dollars each`).join(", ");
-  const text = `Shopping bag overview. You have ${totals.itemCount} items in your bag. Items include: ${itemsSpoken}. Subtotal is ${totals.subtotal.toFixed(2)} dollars. ` +
-    (totals.discountAmount > 0 ? `Voucher discount of ${totals.discountAmount.toFixed(2)} dollars applied. ` : "") +
-    `Selected shipping is ${totals.shippingOption.name} costing ${totals.shippingCost === 0 ? "free of charge" : totals.shippingCost.toFixed(2) + " dollars"}. ` +
-    `Estimated tax is ${totals.taxAmount.toFixed(2)} dollars. Grand total is ${totals.grandTotal.toFixed(2)} dollars. ` +
+  const itemsSpoken = totals.items.map(i => `${i.quantity} of ${i.product.name} at ${i.product.price} rupees each`).join(", ");
+  const text = `Shopping bag overview. You have ${totals.itemCount} items in your bag. Items include: ${itemsSpoken}. Subtotal is ${totals.subtotal.toFixed(0)} rupees. ` +
+    (totals.discountAmount > 0 ? `Voucher discount of ${totals.discountAmount.toFixed(0)} rupees applied. ` : "") +
+    `Selected shipping is ${totals.shippingOption.name} costing ${totals.shippingCost === 0 ? "free of charge" : totals.shippingCost.toFixed(0) + " rupees"}. ` +
+    `Estimated tax is ${totals.taxAmount.toFixed(0)} rupees. Grand total is ${totals.grandTotal.toFixed(0)} rupees. ` +
     `Press Tab to proceed to checkout.`;
 
   if (typeof narrateText === "function") {
@@ -1051,13 +1159,13 @@ function openCheckoutModal() {
       <div class="checkout-mini-item">
         <span class="chk-qty">${i.quantity}x</span>
         <span class="chk-title">${i.product.name}</span>
-        <span class="chk-price">$${i.lineTotal.toFixed(2)}</span>
+        <span class="chk-price">${formatCurrency(i.lineTotal)}</span>
       </div>
     `).join("");
   }
 
   if (totalValEl) {
-    totalValEl.textContent = `$${totals.grandTotal.toFixed(2)}`;
+    totalValEl.textContent = formatCurrency(totals.grandTotal);
   }
 
   if (modal) {
@@ -1084,16 +1192,16 @@ function closeCheckoutModal() {
  */
 function fillTestCheckoutData() {
   const fields = {
-    checkoutFullName: "Alexander Vance",
-    checkoutEmail: "alexander.vance@zenvy-luxury.com",
-    checkoutPhone: "+1 (555) 019-2834",
-    checkoutAddress: "Penthouse 4B, 740 Park Avenue",
-    checkoutCity: "New York",
-    checkoutPostal: "10021",
+    checkoutFullName: "Kavinda Perera",
+    checkoutEmail: "kavinda.perera@gmail.com",
+    checkoutPhone: "+94 77 123 4567",
+    checkoutAddress: "No. 45/2, Galle Road, Bambalapitiya",
+    checkoutCity: "Colombo",
+    checkoutPostal: "00400",
     checkoutCardNum: "4242 •••• •••• 4242",
     checkoutCardExpiry: "12/28",
     checkoutCardCvv: "888",
-    checkoutNotes: "Please deliver with signature verification."
+    checkoutNotes: "Please call 077 123 4567 before delivery. Deliver during office hours."
   };
 
   Object.entries(fields).forEach(([id, val]) => {
@@ -1101,7 +1209,7 @@ function fillTestCheckoutData() {
     if (el) el.value = val;
   });
 
-  showToast("Auto-filled test checkout credentials!", "info");
+  showToast("Auto-filled Sri Lankan test checkout credentials!", "info");
 }
 
 /**
@@ -1264,8 +1372,8 @@ function showOrderSuccessModal(order) {
             <div class="invoice-item-row">
               <span class="inv-name">${i.name}</span>
               <span class="inv-qty">${i.quantity}</span>
-              <span class="inv-price">$${i.price.toFixed(2)}</span>
-              <span class="inv-total" style="text-align: right;">$${i.lineTotal.toFixed(2)}</span>
+              <span class="inv-price">${formatCurrency(i.price)}</span>
+              <span class="inv-total" style="text-align: right;">${formatCurrency(i.lineTotal)}</span>
             </div>
           `).join("")}
         </div>
@@ -1273,25 +1381,25 @@ function showOrderSuccessModal(order) {
         <div class="invoice-totals-breakdown">
           <div class="inv-breakdown-row">
             <span>Subtotal:</span>
-            <span>$${order.subtotal.toFixed(2)}</span>
+            <span>${formatCurrency(order.subtotal)}</span>
           </div>
           ${order.discount > 0 ? `
             <div class="inv-breakdown-row discount">
               <span>Voucher Savings (${order.promoCode}):</span>
-              <span>−$${order.discount.toFixed(2)}</span>
+              <span>−${formatCurrency(order.discount)}</span>
             </div>
           ` : ""}
           <div class="inv-breakdown-row">
             <span>Shipping (${order.shippingOption}):</span>
-            <span>${order.shippingCost === 0 ? "FREE" : `$${order.shippingCost.toFixed(2)}`}</span>
+            <span>${order.shippingCost === 0 ? "FREE" : formatCurrency(order.shippingCost)}</span>
           </div>
           <div class="inv-breakdown-row">
-            <span>Sales Tax (5%):</span>
-            <span>$${order.tax.toFixed(2)}</span>
+            <span>Estimated VAT (5%):</span>
+            <span>${formatCurrency(order.tax)}</span>
           </div>
           <div class="inv-breakdown-row grand-total">
             <strong>Grand Total Paid:</strong>
-            <strong class="gold-amount">$${order.grandTotal.toFixed(2)}</strong>
+            <strong class="gold-amount">${formatCurrency(order.grandTotal)}</strong>
           </div>
         </div>
       </div>
@@ -1312,7 +1420,7 @@ function showOrderSuccessModal(order) {
   document.body.classList.add("modal-open");
 
   if (typeof announceLiveMessage === "function") {
-    announceLiveMessage(`Order ${order.orderId} placed successfully. Total paid $${order.grandTotal.toFixed(2)}.`);
+    announceLiveMessage(`Order ${order.orderId} placed successfully. Total paid ${formatCurrency(order.grandTotal)}.`);
   }
 }
 
@@ -1399,13 +1507,13 @@ function openOrderHistoryModal() {
                 <div class="past-item-pill">
                   <span class="pill-qty">${i.quantity}×</span>
                   <span class="pill-name">${i.name}</span>
-                  <span class="pill-price">$${i.lineTotal.toFixed(2)}</span>
+                  <span class="pill-price">${formatCurrency(i.lineTotal)}</span>
                 </div>
               `).join("")}
             </div>
 
             <div class="past-order-footer">
-              <span class="past-order-total">Total Paid: <strong>$${ord.grandTotal.toFixed(2)}</strong></span>
+              <span class="past-order-total">Total Paid: <strong>${formatCurrency(ord.grandTotal)}</strong></span>
               <button type="button" class="btn-reorder" onclick="reorderItems('${ord.orderId}')">
                 🔁 Re-order Items
               </button>
