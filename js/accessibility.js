@@ -208,6 +208,7 @@ function narrateProduct(productId) {
  */
 function narratePageSummary() {
   const isHomePage = !!document.getElementById("heroSection");
+  const isProductsPage = !!document.getElementById("productGridContainer");
   let script = "";
 
   if (isHomePage) {
@@ -217,12 +218,18 @@ function narratePageSummary() {
       You can use the top accessibility bar to switch between Normal, Large, and Extra Large font sizes, toggle High Contrast mode, and control audio narration.
       Use the search bar in the navigation header to search for any product, or browse our categories and featured products below.
     `;
-  } else {
+  } else if (isProductsPage) {
     script = `
-      You are on the Zenvy Product Catalog page.
-      Browse our ten accessible items.
-      You can filter items by All, Electronics, Clothing, or Food, and sort by Popularity, Price low to high, Price high to low, or Ratings.
+      Welcome to Zenvy, Product Catalog page.
+      Browse our ten accessible luxury items across Electronics, Clothing, and Gourmet Food.
+      You can filter items by All, Electronics, Clothing, or Food, and sort by Popularity, Price, or Ratings.
       Use the Listen button on any product card for instant audio readout of its specifications and price.
+    `;
+  } else {
+    const pageTitle = document.title ? document.title.split("|")[0].trim() : "Store";
+    script = `
+      Welcome to Zenvy, ${pageTitle} page.
+      You can use the accessibility controls in the top toolbar to adjust font size and high contrast mode.
     `;
   }
 
