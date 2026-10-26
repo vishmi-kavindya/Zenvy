@@ -3597,6 +3597,11 @@ html.high-contrast .checkout-demo-note {
   transition: all var(--trans-fast);
 }
 
+.form-input option {
+  background-color: #1c1a17;
+  color: #ffffff;
+}
+
 .form-input:focus {
   border-color: var(--primary);
   background: rgba(255, 255, 255, 0.08);

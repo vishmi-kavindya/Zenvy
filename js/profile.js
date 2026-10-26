@@ -243,7 +243,7 @@ function renderSignedInProfile(container, account) {
                 <option value="Eastern Province" ${profile.province === 'Eastern Province' ? 'selected' : ''}>Eastern Province (Trincomalee, Batticaloa, Ampara)</option>
                 <option value="Uva Province" ${profile.province === 'Uva Province' ? 'selected' : ''}>Uva Province (Badulla, Monaragala)</option>
                 <option value="North Central Province" ${profile.province === 'North Central Province' ? 'selected' : ''}>North Central Province (Anuradhapura, Polonnaruwa)</option>
-                <option value="Northern Province" ${profile.province === 'Northern Province' ? 'selected' : ''}>Northern Province (Jaffna, Kilinochchi, Mannar)</option>
+                <option value="Northern Province" ${profile.province === 'Northern Province' ? 'selected' : ''}>Northern Province (Jaffna, Kilinochchi, Mannar, Mullaitivu, Vavuniya)</option>
               </select>
             </div>
 

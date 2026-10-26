@@ -1217,6 +1217,7 @@ function fillTestCheckoutData() {
     checkoutAddress: "No. 45/2, Galle Road, Bambalapitiya",
     checkoutCity: "Colombo",
     checkoutPostal: "00400",
+    checkoutProvince: "Western Province",
     checkoutNotes: "Please call 077 123 4567 before delivery. Deliver during office hours."
   };
 
@@ -1241,6 +1242,7 @@ function handleCheckoutSubmit(e) {
   const address = (document.getElementById("checkoutAddress")?.value || "").trim();
   const city = (document.getElementById("checkoutCity")?.value || "").trim();
   const postal = (document.getElementById("checkoutPostal")?.value || "").trim();
+  const province = document.getElementById("checkoutProvince")?.value || "";
   const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || "card";
   const notes = (document.getElementById("checkoutNotes")?.value || "").trim();
 
@@ -1300,6 +1302,7 @@ function handleCheckoutSubmit(e) {
         address,
         city,
         postal,
+        province,
         paymentMethod: paymentMethod === "card"
           ? "Card payment (demo only - not charged)"
           : paymentMethod === "cod"
@@ -1358,7 +1361,7 @@ function handleCheckoutSubmit(e) {
 
     if (typeof window.updateCurrentZenvyProfile === "function") {
       try {
-        window.updateCurrentZenvyProfile({ fullName, phone, address, city, postal });
+        window.updateCurrentZenvyProfile({ fullName, phone, address, city, postal, province });
       } catch (error) {
         console.error("Could not save customer delivery details:", error);
         showToast("Order saved, but delivery details could not be saved to your account.", "warning");
