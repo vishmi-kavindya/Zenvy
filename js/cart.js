@@ -1620,9 +1620,14 @@ function openOrderHistoryModal() {
 
             <div class="past-order-footer">
               <span class="past-order-total">Order Total: <strong>${formatCurrency(ord.grandTotal)}</strong></span>
-              <button type="button" class="btn-reorder" data-reorder-order-id="${escapeHTML(ord.orderId)}">
-                🔁 Re-order Items
-              </button>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <a href="order-confirmation.html?orderId=${encodeURIComponent(ord.orderId)}" class="btn-invoice-view" title="View live courier tracking & visual status timeline">
+                  📍 Track Status
+                </a>
+                <button type="button" class="btn-reorder" data-reorder-order-id="${escapeHTML(ord.orderId)}">
+                  🔁 Re-order
+                </button>
+              </div>
             </div>
           </div>
         `).join("")}

@@ -636,7 +636,9 @@ function processDedicatedCheckout(event) {
       shippingCost: totals.shippingCost,
       tax: totals.taxAmount,
       grandTotal: totals.grandTotal,
-      status: "Confirmed & In Preparation"
+      status: "Confirmed & In Preparation",
+      trackingNumber: `PX-LK-${Math.floor(100000 + Math.random() * 900000)}`,
+      estimatedDelivery: "2–3 Business Days (PromptX / Domex)"
     };
 
     // Deduct stock & save
@@ -665,12 +667,13 @@ function processDedicatedCheckout(event) {
       removePromoVoucher(false);
     }
 
-    // Render Confirmation View
-    renderDedicatedOrderSuccess(order);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
+    // Announce and redirect to dedicated Order Confirmation & Status page
     announceLive(`Order ${order.orderId} placed successfully. Total ${formatLKRCurrency(order.grandTotal)}.`);
     showToastNotification(`Order #${order.orderId} placed successfully!`, "success");
+
+    setTimeout(() => {
+      window.location.href = `order-confirmation.html?orderId=${encodeURIComponent(order.orderId)}`;
+    }, 600);
   }, 1000);
 }
 

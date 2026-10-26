@@ -5179,3 +5179,437 @@ html.high-contrast .btn-invoice-view {
     padding: 20px 16px;
   }
 }
+
+/* ==========================================================================
+   ORDER CONFIRMATION & STATUS DISPLAY (FEATURES 10, 11, 12, 13)
+   ========================================================================== */
+
+.confirmation-page-main {
+  width: min(100% - 40px, var(--container-max));
+  margin: 30px auto 70px;
+}
+
+.confirmation-page-container {
+  width: 100%;
+}
+
+.order-confirmation-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* 1. Celebratory Hero */
+.confirmation-success-hero {
+  background: linear-gradient(135deg, rgba(28, 26, 23, 0.98), rgba(20, 18, 16, 0.98));
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: clamp(28px, 4vw, 44px);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.confirmation-success-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent-sand), var(--primary));
+}
+
+.confirmation-quick-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.meta-chip {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-xs);
+}
+
+.chip-label {
+  color: var(--text-muted);
+}
+
+.chip-val {
+  color: var(--text-main);
+}
+
+/* 2. Feature 13: Order Status Display Card & Stepper */
+.order-status-card {
+  background: rgba(28, 26, 23, 0.95);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: clamp(24px, 3.5vw, 36px);
+  box-shadow: var(--shadow-sm);
+}
+
+.status-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.status-card-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 600;
+  color: #ffffff;
+  margin: 4px 0 0;
+}
+
+.live-status-pill {
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  border-radius: var(--radius-full);
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 10px #4ade80;
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.tracking-info-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 36px;
+}
+
+.track-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.track-val {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  display: block;
+}
+
+.track-val code {
+  font-family: monospace;
+  background: rgba(197, 155, 109, 0.15);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* 5-Step Stepper */
+.order-stepper-container {
+  position: relative;
+  padding: 10px 0 20px;
+}
+
+.stepper-progress-track {
+  position: absolute;
+  top: 32px;
+  left: 6%;
+  right: 6%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  z-index: 1;
+}
+
+.stepper-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #4ade80);
+  border-radius: 999px;
+  transition: width 600ms cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.stepper-steps-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stepper-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 18%;
+}
+
+.step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  transition: all var(--trans-fast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.stepper-step-item.is-completed .step-circle {
+  background: #14532d;
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.stepper-step-item.is-active .step-circle {
+  background: linear-gradient(135deg, var(--primary), #8b683e);
+  border-color: var(--accent-sand);
+  color: var(--text-inverse);
+  box-shadow: 0 0 20px var(--primary-glow);
+  transform: scale(1.1);
+}
+
+.step-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-name {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.stepper-step-item.is-completed .step-name,
+.stepper-step-item.is-active .step-name {
+  color: #ffffff;
+}
+
+.step-desc {
+  font-size: 0.70rem;
+  color: var(--text-muted);
+}
+
+/* 3. Details Grid: Delivery Address (Feature 10) & Payment */
+.confirmation-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.confirmation-box {
+  background: rgba(28, 26, 23, 0.95);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 26px;
+  box-shadow: var(--shadow-sm);
+}
+
+.confirmation-box-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.confirmation-box-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  color: #ffffff;
+  margin: 0;
+}
+
+.box-icon {
+  font-size: 1.3rem;
+  color: var(--primary);
+}
+
+.address-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--fs-xs);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.detail-row.notes-row {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.detail-val {
+  color: var(--text-main);
+  text-align: right;
+}
+
+.notes-val {
+  text-align: left;
+  font-style: italic;
+  color: var(--accent-sand);
+}
+
+/* 4. Itemized Product Table & Totals (Feature 11) */
+.confirmation-invoice-card {
+  background: rgba(28, 26, 23, 0.95);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.invoice-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.invoice-card-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  color: #ffffff;
+  margin: 0;
+}
+
+.invoice-count-tag {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.inv-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inv-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--bg-prod-img);
+  flex-shrink: 0;
+}
+
+.inv-cat {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* 5. Actions Strip */
+.confirmation-actions-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+/* Responsive & High Contrast for Order Confirmation */
+@media (max-width: 900px) {
+  .confirmation-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-info-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .stepper-progress-track {
+    display: none;
+  }
+
+  .stepper-steps-row {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .stepper-step-item {
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    gap: 14px;
+  }
+
+  .step-circle {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+}
+
+html.high-contrast .confirmation-success-hero,
+html.high-contrast .order-status-card,
+html.high-contrast .confirmation-box,
+html.high-contrast .confirmation-invoice-card {
+  background: #000000 !important;
+  border: 2px solid #ffea00 !important;
+}
+
+html.high-contrast .live-status-pill,
+html.high-contrast .step-circle {
+  border-color: #ffea00 !important;
+  color: #ffea00 !important;
+}

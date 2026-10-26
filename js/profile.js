@@ -400,6 +400,9 @@ function renderProfileOrdersListHTML(orders) {
 
           <!-- Footer Actions -->
           <div class="profile-order-footer">
+            <a href="order-confirmation.html?orderId=${encodeURIComponent(order.orderId)}" class="btn-invoice-view" title="View live courier tracking & visual status timeline">
+              📍 Track Status
+            </a>
             <button type="button" class="btn-invoice-view" onclick="viewProfileInvoice('${escapeHTML(order.orderId)}')">
               📄 View Invoice
             </button>
