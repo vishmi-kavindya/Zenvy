@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" class="font-size-normal">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create your Zenvy customer account." />
+  <title>Create Account | Zenvy</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+  <header class="account-header">
+    <a href="index.html" class="brand-logo-link" aria-label="Zenvy Home">
+      <img src="images/LOGO.png" alt="Zenvy - Curated for Digital Living" class="brand-logo-img" />
+    </a>
+    <nav class="account-nav" aria-label="Account navigation">
+      <a href="products.html">Continue shopping</a>
+      <a href="login.html">Sign in</a>
+    </nav>
+  </header>
+
+  <main id="mainContent" class="account-page">
+    <section class="account-card" aria-labelledby="accountTitle">
+      <div class="account-card-intro">
+        <span class="section-tag" id="registerSectionTag">Join Zenvy</span>
+        <h1 id="accountTitle" class="account-title">Create your account</h1>
+        <p id="registerIntroSubtitle">Save your details for a more seamless shopping experience.</p>
+        <div id="checkoutRedirectNotice" class="checkout-account-banner" style="display: none; margin-top: 14px;">
+          <span class="acc-icon" aria-hidden="true">🔒</span>
+          <span>Create an account to complete your <strong>Secure Checkout</strong>.</span>
+        </div>
+      </div>
+
+      <form class="account-form" data-account-form="register">
+        <div class="form-group">
+          <label class="form-label" for="registerName">Full name</label>
+          <input class="form-input" type="text" id="registerName" name="name" autocomplete="name" minlength="2" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="registerEmail">Email address</label>
+          <input class="form-input" type="email" id="registerEmail" name="email" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="registerPassword">Password</label>
+          <div class="account-password-wrap">
+            <input class="form-input" type="password" id="registerPassword" name="password" autocomplete="new-password" minlength="8" aria-describedby="passwordRequirements" required />
+            <button class="password-visibility-btn" type="button" data-password-toggle="registerPassword" aria-label="Show password" aria-pressed="false">Show</button>
+          </div>
+          <span id="passwordRequirements" class="account-field-hint">Use at least 8 characters.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirm password</label>
+          <div class="account-password-wrap">
+            <input class="form-input" type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required />
+            <button class="password-visibility-btn" type="button" data-password-toggle="confirmPassword" aria-label="Show password" aria-pressed="false">Show</button>
+          </div>
+        </div>
+        <label class="account-consent">
+          <input type="checkbox" name="terms" required />
+          <span>I agree to the terms of use and privacy policy.</span>
+        </label>
+        <button class="btn-checkout account-submit-btn" type="submit">Create Account <span aria-hidden="true">→</span></button>
+        <p class="account-form-status" data-account-status role="status" aria-live="polite"></p>
+      </form>
+
+      <p class="account-switch-prompt">Already have an account? <a href="login.html">Sign in</a></p>
+      <p class="account-security-note">This browser-only demo stores account details on this device. Anyone using this browser may access or change them. Passwords are hashed, but this is not secure server-based authentication; do not reuse a sensitive password.</p>
+    </section>
+  </main>
+
+  <footer class="account-footer">
+    <a href="index.html">Back to Zenvy</a>
+    <span>&copy; 2026 Zenvy Luxury E-Commerce</span>
+  </footer>
+  <script src="js/account.js"></script>
+</body>
+</html>

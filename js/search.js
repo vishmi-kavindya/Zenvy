@@ -295,7 +295,7 @@ function showSuggestions(term, dropdown, input) {
           <div class="suggestion-title">${highlightMatch(product.name, term)}</div>
           <div class="suggestion-meta">
             <span class="suggestion-cat">${product.categoryName}</span>
-            <span class="suggestion-price">$${product.price.toFixed(2)}</span>
+            <span class="suggestion-price">${typeof formatCurrency === "function" ? formatCurrency(product.price) : `Rs. ${product.price.toLocaleString("en-LK", { minimumFractionDigits: 2 })}`}</span>
             <span class="suggestion-rating">★ ${product.rating.toFixed(1)}</span>
           </div>
         </div>

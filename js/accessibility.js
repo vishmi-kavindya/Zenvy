@@ -192,7 +192,7 @@ function narrateProduct(productId) {
   const narrationScript = `
     Product: ${product.name}.
     Category: ${product.categoryName}.
-    Price: ${product.price.toFixed(2)} dollars.
+    Price: ${product.price.toLocaleString("en-LK")} rupees.
     Customer Rating: ${product.rating} stars out of 5 from ${product.reviewsCount} reviews.
     Stock status: ${product.inStock ? 'Currently in stock' : 'Out of stock'}.
     Description: ${product.description}.

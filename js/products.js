@@ -11,14 +11,27 @@
  * and browser localStorage persistence.
  */
 
+/**
+ * Format currency into Sri Lankan Rupees (Rs. X,XXX.XX)
+ * @param {number} amount 
+ * @returns {string} Formatted Sri Lankan Rupee amount
+ */
+function formatCurrency(amount) {
+  const num = Number(amount) || 0;
+  return "Rs. " + num.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+if (typeof window !== "undefined") {
+  window.formatCurrency = formatCurrency;
+}
+
 const PRODUCTS_DATA = [
   {
     id: "prod-1",
     name: "Aura Luxe ANC Wireless Headphones",
     category: "electronics",
     categoryName: "Electronics",
-    price: 149.99,
-    originalPrice: 199.99,
+    price: 28500.00,
+    originalPrice: 34900.00,
     rating: 4.8,
     reviewsCount: 142,
     popularity: 98,
@@ -28,13 +41,13 @@ const PRODUCTS_DATA = [
     badgeType: "hot",
     image: "images/headphone.jpeg",
     svgIcon: "headphones",
-    description: "Premium acoustic noise-cancelling over-ear wireless headphones finished with brushed champagne metal, 40-hour battery life, and plush memory foam earcups.",
+    description: "Premium acoustic noise-cancelling over-ear wireless headphones finished with brushed champagne metal, 40-hour battery life, TRCSL approved compliance, and plush memory foam earcups.",
     specs: [
       "Hybrid Active Noise Cancellation (ANC)",
       "40-hour battery life with fast Type-C charging",
       "Bluetooth 5.3 + lossless 3.5mm gold-plated jack",
-      "Multipoint pairing for laptop and mobile switching",
-      "Ergonomic tactile physical control buttons"
+      "TRCSL Approved with 1-Year Comprehensive Sri Lankan Warranty",
+      "Multipoint pairing for laptop and mobile switching"
     ]
   },
   {
@@ -42,8 +55,8 @@ const PRODUCTS_DATA = [
     name: "Minimalist Chrono Smart Watch",
     category: "electronics",
     categoryName: "Electronics",
-    price: 89.50,
-    originalPrice: 119.00,
+    price: 18900.00,
+    originalPrice: 24000.00,
     rating: 4.6,
     reviewsCount: 96,
     popularity: 92,
@@ -53,12 +66,12 @@ const PRODUCTS_DATA = [
     badgeType: "popular",
     image: "images/watch.jpeg",
     svgIcon: "watch",
-    description: "Clean Scandinavian-inspired black and gold smart fitness timepiece with high-contrast AMOLED display, heart-rate tracking, and 14-day battery reserve.",
+    description: "Clean Scandinavian-inspired black and gold smart fitness timepiece with high-contrast AMOLED display, heart-rate tracking, IP68 water resistance, and 14-day battery reserve.",
     specs: [
       "1.43-inch high-contrast AMOLED crystal display",
       "14-day battery life on a single magnetic charge",
       "24/7 Heart rate, SpO2 blood oxygen, and sleep monitoring",
-      "5 ATM water resistance (swimming and shower safe)",
+      "5 ATM water resistance (swimming and monsoon safe)",
       "Universal vibration haptic alerts for notifications"
     ]
   },
@@ -67,8 +80,8 @@ const PRODUCTS_DATA = [
     name: "Lumina 360 Acoustic Studio Speaker",
     category: "electronics",
     categoryName: "Electronics",
-    price: 59.00,
-    originalPrice: 79.99,
+    price: 14500.00,
+    originalPrice: 19500.00,
     rating: 4.5,
     reviewsCount: 78,
     popularity: 85,
@@ -82,7 +95,7 @@ const PRODUCTS_DATA = [
     specs: [
       "360-degree omnidirectional room-filling audio",
       "24W peak dynamic output with deep bass resonance",
-      "IP67 splashproof & outdoor weather resistant",
+      "IP67 splashproof & tropical weather resistant",
       "16-hour continuous playtime with powerbank function",
       "Tactile embossed top controls for accessibility"
     ]
@@ -92,8 +105,8 @@ const PRODUCTS_DATA = [
     name: "VisionView 4K Ultra HD Action Camera",
     category: "electronics",
     categoryName: "Electronics",
-    price: 119.00,
-    originalPrice: 149.00,
+    price: 26900.00,
+    originalPrice: 32500.00,
     rating: 4.7,
     reviewsCount: 64,
     popularity: 88,
@@ -114,11 +127,11 @@ const PRODUCTS_DATA = [
   },
   {
     id: "prod-5",
-    name: "Classic Beige Linen Casual Shirt",
+    name: "Ceylon Handcrafted Pure Linen Casual Shirt",
     category: "clothing",
     categoryName: "Clothing",
-    price: 38.00,
-    originalPrice: 49.00,
+    price: 6800.00,
+    originalPrice: 8500.00,
     rating: 4.6,
     reviewsCount: 118,
     popularity: 89,
@@ -128,22 +141,22 @@ const PRODUCTS_DATA = [
     badgeType: "eco",
     image: "images/shirt.jpeg",
     svgIcon: "shirt",
-    description: "Breathable 100% natural organic flax linen shirt with relaxed tailored cut, mother-of-pearl buttons, and sensory-friendly tagless collar.",
+    description: "Breathable 100% natural organic flax linen shirt with relaxed tailored cut, mother-of-pearl buttons, and sensory-friendly tagless collar designed for tropical Sri Lankan weather.",
     specs: [
       "100% Pure Certified Natural Linen",
       "Tag-free printed label for zero skin friction",
-      "Breathable, lightweight texture ideal for warm climates",
+      "Breathable, lightweight texture ideal for Sri Lankan climate",
       "Pre-washed for signature softness that improves over time",
-      "Ethically tailored with reinforced seams"
+      "Ethically tailored with reinforced seams in Sri Lanka"
     ]
   },
   {
     id: "prod-6",
-    name: "AeroFlex All-Weather Minimalist Jacket",
+    name: "AeroFlex All-Weather Monsoon Jacket",
     category: "clothing",
     categoryName: "Clothing",
-    price: 74.99,
-    originalPrice: 99.00,
+    price: 11500.00,
+    originalPrice: 15000.00,
     rating: 4.9,
     reviewsCount: 154,
     popularity: 96,
@@ -153,7 +166,7 @@ const PRODUCTS_DATA = [
     badgeType: "hot",
     image: "images/jacket.jpeg",
     svgIcon: "jacket",
-    description: "Streamlined water-repellent performance shell jacket featuring subtle reflective safety accents, stowaway hood, and ergonomic zip pulls.",
+    description: "Streamlined water-repellent performance shell jacket featuring subtle reflective safety accents, stowaway storm hood, and ergonomic zip pulls tailored for monsoon protection.",
     specs: [
       "Advanced DWR (Durable Water Repellent) breathable shell",
       "High-visibility reflective safety accents on cuffs and spine",
@@ -167,8 +180,8 @@ const PRODUCTS_DATA = [
     name: "DenimCraft Tailored Stretch Jeans",
     category: "clothing",
     categoryName: "Clothing",
-    price: 49.50,
-    originalPrice: 65.00,
+    price: 8900.00,
+    originalPrice: 11500.00,
     rating: 4.3,
     reviewsCount: 82,
     popularity: 81,
@@ -178,7 +191,7 @@ const PRODUCTS_DATA = [
     badgeType: "popular",
     image: "images/denim.jpeg",
     svgIcon: "jeans",
-    description: "Contemporary slim-tapered denim crafted with 4-way stretch flex weave for all-day mobility, comfort waistband, and rich artisan rinse.",
+    description: "Contemporary slim-tapered denim crafted with 4-way stretch flex weave for all-day mobility, comfort waistband, and rich artisan indigo wash.",
     specs: [
       "98% Sustainable Cotton, 2% High-Recovery Elastane",
       "4-way flex stretch prevents bagging at knees",
@@ -189,11 +202,11 @@ const PRODUCTS_DATA = [
   },
   {
     id: "prod-8",
-    name: "NatureGold Raw Wildflower Honey 500g",
+    name: "Ceylon Wild Bee Pure Forest Honey 500g",
     category: "food",
-    categoryName: "Food",
-    price: 14.99,
-    originalPrice: 19.99,
+    categoryName: "Gourmet Food",
+    price: 2450.00,
+    originalPrice: 3200.00,
     rating: 4.9,
     reviewsCount: 220,
     popularity: 99,
@@ -203,22 +216,22 @@ const PRODUCTS_DATA = [
     badgeType: "eco",
     image: "images/honey.jpeg",
     svgIcon: "honey",
-    description: "100% unpasteurized raw mountain wildflower honey harvested ethically from remote alpine meadows. Packed with natural enzymes, propolis, and delicate nectar notes.",
+    description: "100% pure, unfiltered raw forest bee honey harvested sustainably from the pristine Knuckles Conservation Forest range in Sri Lanka. Rich in bio-active bee pollen and enzymes.",
     specs: [
-      "100% Pure, Unfiltered & Cold-Extracted Honey",
-      "Single-source mountain beekeeping with zero additives",
+      "100% Pure, Unfiltered & Cold-Extracted Sri Lankan Honey",
+      "Harvested sustainably from Knuckles Mountain Range",
       "Naturally rich in bio-active enzymes & bee pollen",
-      "Recyclable amber glass jar with easy-twist embossed lid",
-      "Certified Gluten-Free, Non-GMO & Kosher"
+      "Recyclable amber glass jar with airtight seal",
+      "Certified 100% Natural with zero added sugar or preservatives"
     ]
   },
   {
     id: "prod-9",
-    name: "ArtisanReserve Espresso Whole Beans 1kg",
+    name: "Ceylon Highlands Single-Origin Arabica Coffee 1kg",
     category: "food",
-    categoryName: "Food",
-    price: 19.50,
-    originalPrice: 25.00,
+    categoryName: "Gourmet Food",
+    price: 4800.00,
+    originalPrice: 6000.00,
     rating: 4.8,
     reviewsCount: 185,
     popularity: 94,
@@ -228,22 +241,22 @@ const PRODUCTS_DATA = [
     badgeType: "hot",
     image: "images/coffee.jpeg",
     svgIcon: "coffee",
-    description: "Slow-roasted specialty Arabica beans featuring an opulent profile of dark Swiss cocoa, roasted hazelnut, and golden caramel with velvety crema.",
+    description: "Slow-roasted specialty Arabica whole beans cultivated at 4,500ft in Kotmale and Nuwara Eliya estates. Profiles of dark chocolate, roasted hazelnut, and golden cane sugar.",
     specs: [
-      "100% High-Elevation Specialty Grade Arabica Beans",
-      "Fair Trade & Rainforest Alliance Certified",
-      "Micro-drum roasted in small batches for peak aromatic freshness",
-      "Airtight bag with one-way degassing freshness valve",
-      "Tasting notes: Dark chocolate, hazelnut, and cane sugar"
+      "100% Sri Lankan Highland Specialty Arabica Beans",
+      "Single-origin harvest from Nuwara Eliya & Kotmale hills",
+      "Small-batch drum roasted for peak aromatic freshness",
+      "Airtight foil pouch with one-way degassing freshness valve",
+      "Tasting notes: Dark chocolate, toasted hazelnut, and sweet caramel"
     ]
   },
   {
     id: "prod-10",
-    name: "NutriCrunch Royal Roasted Nut Mix 750g",
+    name: "Royal Ceylon Roasted Cashew & Nut Medley 750g",
     category: "food",
-    categoryName: "Food",
-    price: 16.25,
-    originalPrice: 21.50,
+    categoryName: "Gourmet Food",
+    price: 3950.00,
+    originalPrice: 5200.00,
     rating: 4.7,
     reviewsCount: 104,
     popularity: 87,
@@ -253,12 +266,12 @@ const PRODUCTS_DATA = [
     badgeType: "popular",
     image: "images/nuts.jpeg",
     svgIcon: "nuts",
-    description: "Dry-roasted artisan blend of whole California almonds, jumbo cashews, golden walnuts, and pecans, gently dusted with pink Himalayan salt. Zero added oils.",
+    description: "Dry-roasted premium medley featuring jumbo Sri Lankan cashews from Batticaloa and Kurunegala, golden almonds, and walnuts, lightly kissed with mineral sea salt.",
     specs: [
+      "Jumbo Grade-A Sri Lankan Cashews (Kaju) and premium nuts",
       "Slow dry-roasted with absolutely zero added oils",
-      "Gourmet mix: Almonds, cashews, walnuts, and pecans",
-      "Lightly kissed with mineral-rich Himalayan pink salt",
-      "6g plant protein and healthy Omega-3 fats per serving",
+      "Lightly dusted with natural mineral sea salt",
+      "Rich in plant protein and healthy Omega fats",
       "Resealable freshness zipper pouch"
     ]
   }
@@ -430,8 +443,8 @@ function createProductCardHTML(product) {
 
         <div class="product-price-row">
           <div class="price-wrap">
-            <span class="current-price">$${product.price.toFixed(2)}</span>
-            ${product.originalPrice ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ""}
+            <span class="current-price">${formatCurrency(product.price)}</span>
+            ${product.originalPrice ? `<span class="original-price">${formatCurrency(product.originalPrice)}</span>` : ""}
           </div>
           <span class="stock-status ${product.stockCount <= 5 ? 'stock-low' : 'stock-ok'}">
             ${product.stockCount <= 5 ? `Only ${product.stockCount} left!` : 'In Stock'}
@@ -457,6 +470,16 @@ function createProductCardHTML(product) {
             aria-label="View full details for ${product.name}"
           >
             <span aria-hidden="true">👁</span> Details
+          </button>
+
+          <button 
+            type="button" 
+            class="btn-add-cart" 
+            onclick="if(typeof addToCart==='function'){ addToCart('${product.id}', 1, event); }"
+            aria-label="Add ${product.name} to shopping bag"
+            title="Add to Shopping Bag"
+          >
+            <span aria-hidden="true">🛒</span> Add
           </button>
         </div>
       </div>
@@ -510,8 +533,8 @@ function openProductModal(productId) {
         </div>
 
         <div class="modal-price-box">
-          <span class="modal-current-price">$${product.price.toFixed(2)}</span>
-          ${product.originalPrice ? `<span class="modal-original-price">$${product.originalPrice.toFixed(2)}</span>` : ""}
+          <span class="modal-current-price">${formatCurrency(product.price)}</span>
+          ${product.originalPrice ? `<span class="modal-original-price">${formatCurrency(product.originalPrice)}</span>` : ""}
           <span class="modal-discount-tag">Save ${(100 - (product.price / product.originalPrice * 100)).toFixed(0)}%</span>
         </div>
 
@@ -527,6 +550,22 @@ function openProductModal(productId) {
             ● ${product.inStock ? `In Stock (${product.stockCount} units available)` : 'Out of Stock'}
           </span>
           <span class="sku-text">Product Code: AUR-${product.id.toUpperCase()}</span>
+        </div>
+
+        <div class="modal-cart-action-row" style="display:flex; gap:12px; align-items:center; margin-bottom:14px; width:100%;">
+          <div class="quantity-selector" role="group" aria-label="Select quantity">
+            <button type="button" class="btn-qty" onclick="if(typeof adjustModalQty==='function') adjustModalQty(-1)" aria-label="Decrease quantity">−</button>
+            <input type="number" id="modalQuantityInput" value="1" min="1" max="${product.stockCount}" aria-label="Quantity" readonly />
+            <button type="button" class="btn-qty" onclick="if(typeof adjustModalQty==='function') adjustModalQty(1)" aria-label="Increase quantity">+</button>
+          </div>
+          <button 
+            type="button" 
+            class="btn-modal-add-cart" 
+            onclick="if(typeof addModalItemToCart==='function'){ addModalItemToCart('${product.id}'); } else if(typeof addToCart==='function'){ addToCart('${product.id}', 1); closeModal(); }"
+            aria-label="Add ${product.name} to shopping bag"
+          >
+            <span>🛒</span> Add to Bag
+          </button>
         </div>
 
         <div class="modal-actions-box">
