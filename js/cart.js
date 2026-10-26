@@ -864,16 +864,15 @@ function renderCartPage() {
           </div>
 
           <!-- Primary Checkout Button -->
-          <button 
-            type="button" 
+          <a 
+            href="checkout.html" 
             class="btn-checkout" 
-            onclick="openCheckoutModal()"
             aria-label="Proceed to Secure Checkout. Total ${formatCurrency(totals.grandTotal)}"
           >
             <span class="lock-icon" aria-hidden="true">🔒</span>
             <span class="btn-text">Proceed to Checkout</span>
             <span class="checkout-arrow" aria-hidden="true">→</span>
-          </button>
+          </a>
 
           <!-- Accessibility Audio Narration -->
           <button 

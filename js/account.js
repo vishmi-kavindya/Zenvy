@@ -97,7 +97,7 @@ function updateAccountNavigation() {
   document.querySelectorAll("a.btn-account-trigger").forEach(link => {
     link.textContent = account ? `Hi, ${account.name.split(/\s+/)[0]}` : "Sign In";
     link.setAttribute("aria-label", account ? `Signed in as ${account.name}. Account details` : "Sign in to your account");
-    link.href = "login.html";
+    link.href = account ? "profile.html" : "login.html";
 
     const container = link.parentElement;
     if (!container) return;
@@ -204,7 +204,10 @@ async function registerAccount(form) {
 
   localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(accounts));
   form.reset();
-  setFormStatus(form, "Your account has been saved in this browser. You can now sign in.");
+  setFormStatus(form, "Your account has been saved! Redirecting to sign in…");
+  setTimeout(() => {
+    window.location.href = "login.html";
+  }, 1000);
 }
 
 async function loginAccount(form) {
@@ -233,8 +236,13 @@ async function loginAccount(form) {
   window.dispatchEvent(new Event("zenvy:account-change"));
   const signOutButton = form.querySelector("[data-account-signout]");
   if (signOutButton) signOutButton.hidden = false;
+  const profileLink = form.querySelector("[data-account-profile-link]");
+  if (profileLink) profileLink.hidden = false;
   form.reset();
-  setFormStatus(form, `Welcome back, ${account.name}. You are signed in on this browser.`);
+  setFormStatus(form, `Welcome back, ${account.name}! Redirecting to your profile…`);
+  setTimeout(() => {
+    window.location.href = "profile.html";
+  }, 700);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -302,6 +310,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const account = getStoredAccounts().find(savedAccount => savedAccount.email === session.email);
         if (account) {
           signOutButton.hidden = false;
+          const profileLink = loginForm.querySelector("[data-account-profile-link]");
+          if (profileLink) profileLink.hidden = false;
           setFormStatus(loginForm, `You are signed in as ${account.name} on this browser.`);
         } else {
           localStorage.removeItem(ACCOUNT_SESSION_KEY);
@@ -316,6 +326,8 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         localStorage.removeItem(ACCOUNT_SESSION_KEY);
         signOutButton.hidden = true;
+        const profileLink = loginForm.querySelector("[data-account-profile-link]");
+        if (profileLink) profileLink.hidden = true;
         setFormStatus(loginForm, "You have signed out on this browser.");
       } catch (error) {
         console.error("Could not clear account session:", error);
