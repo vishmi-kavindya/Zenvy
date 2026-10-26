@@ -797,6 +797,32 @@ ul {
   color: var(--primary);
 }
 
+.btn-account-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all var(--trans-fast);
+}
+
+.btn-account-trigger:hover {
+  background: rgba(197, 155, 109, 0.12);
+  border-color: var(--primary);
+  color: var(--text-main);
+}
+
+.account-nav-signout {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.025);
+  font-family: var(--font-sans);
+}
+
 .cart-count-badge {
   background: var(--primary);
   color: var(--text-inverse);
@@ -3497,6 +3523,22 @@ ul {
   margin-bottom: 22px;
 }
 
+.checkout-demo-note {
+  margin: -2px 0 14px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--primary);
+  background: rgba(197, 155, 109, 0.07);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+
+html.high-contrast .checkout-demo-note {
+  background: #000000 !important;
+  border: 2px solid #ffea00 !important;
+  color: #ffffff !important;
+}
+
 .checkout-sec-title {
   font-size: var(--fs-sm);
   font-weight: 700;
@@ -3925,6 +3967,12 @@ ul {
   color: #4ade80;
 }
 
+.past-order-payment {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+}
+
 .past-order-items-preview {
   display: flex;
   flex-wrap: wrap;
@@ -4248,5 +4296,235 @@ html.high-contrast .promo-text-input:focus {
   .inv-name,
   .gold-amount {
     color: #000000 !important;
+  }
+}
+
+/* Customer Account Forms */
+.account-header {
+  width: min(100% - 40px, var(--container-max));
+  min-height: var(--header-height);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.account-header .brand-logo-img {
+  height: 54px;
+  width: auto;
+}
+
+.account-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.account-nav a,
+.account-footer a {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  transition: color var(--trans-fast);
+}
+
+.account-nav a:hover,
+.account-footer a:hover {
+  color: var(--primary);
+}
+
+.account-page {
+  min-height: calc(100vh - var(--header-height) - 70px);
+  display: grid;
+  place-items: center;
+  padding: 56px 20px;
+}
+
+.account-card {
+  width: min(100%, 500px);
+  padding: clamp(26px, 5vw, 44px);
+  background: linear-gradient(150deg, rgba(28, 26, 23, 0.98), rgba(20, 18, 16, 0.98));
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.account-card-intro {
+  margin-bottom: 28px;
+}
+
+.account-title {
+  margin: 8px 0 10px;
+  color: var(--text-main);
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 2.7rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+}
+
+.account-card-intro p,
+.account-security-note {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.account-form .form-group {
+  margin-bottom: 18px;
+}
+
+.account-form .form-label {
+  font-size: var(--fs-sm);
+}
+
+.account-password-wrap {
+  position: relative;
+}
+
+.account-password-wrap .form-input {
+  padding-right: 72px;
+}
+
+.password-visibility-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  padding: 6px;
+  color: var(--primary);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+.account-field-hint {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.account-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 20px;
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.account-consent input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  accent-color: var(--primary);
+}
+
+.account-submit-btn {
+  min-height: 54px;
+  margin-top: 4px;
+}
+
+.account-form-status {
+  margin-top: 14px;
+  color: var(--primary);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+
+.account-form-status.is-error {
+  color: #f87171;
+}
+
+.account-signout-btn[hidden] {
+  display: none;
+}
+
+.account-signout-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.account-switch-prompt {
+  margin-top: 22px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.account-switch-prompt a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.account-security-note {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+  font-size: var(--fs-xs);
+}
+
+.account-footer {
+  width: min(100% - 40px, var(--container-max));
+  min-height: 70px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+html.high-contrast .account-card {
+  background: #000000 !important;
+  border: 2px solid #ffea00 !important;
+}
+
+html.high-contrast .account-nav a,
+html.high-contrast .account-footer a,
+html.high-contrast .account-switch-prompt a,
+html.high-contrast .password-visibility-btn {
+  color: #ffea00 !important;
+}
+
+html.high-contrast .account-form-status.is-error {
+  color: #ff7777 !important;
+}
+
+@media (max-width: 580px) {
+  .account-header {
+    width: calc(100% - 32px);
+    min-height: 68px;
+    gap: 12px;
+  }
+
+  .account-header .brand-logo-img {
+    height: 44px;
+  }
+
+  .account-nav {
+    gap: 14px;
+  }
+
+  .account-nav a {
+    font-size: 0.75rem;
+  }
+
+  .account-page {
+    min-height: auto;
+    padding: 36px 16px;
+  }
+
+  .account-footer {
+    width: calc(100% - 32px);
+    min-height: 64px;
+    font-size: 0.7rem;
   }
 }

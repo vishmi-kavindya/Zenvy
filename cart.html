@@ -109,6 +109,8 @@
           <div id="navSearchSuggestions" class="search-suggestions-dropdown" role="listbox" aria-label="Search suggestions"></div>
         </div>
 
+        <a href="login.html" class="btn-account-trigger">Sign In</a>
+
         <a 
           href="cart.html" 
           class="btn-cart-trigger active" 
@@ -209,8 +211,8 @@
             <div class="checkout-section-box">
               <div class="checkout-sec-title">
                 <span>1. Delivery Destination</span>
-                <button type="button" class="btn-autofill-test" onclick="fillTestCheckoutData()" title="Fill test credentials for quick grading">
-                  ⚡ Auto-fill Test Data
+                <button type="button" class="btn-autofill-test" onclick="fillTestCheckoutData()" title="Fill sample delivery information for demo checkout">
+                  ⚡ Fill Sample Details
                 </button>
               </div>
 
@@ -257,27 +259,12 @@
                 <label class="payment-radio-card">
                   <input type="radio" name="paymentMethod" value="card" checked />
                   <div class="pay-card-label">
-                    <span>💳 Credit or Debit Card (Visa / MasterCard)</span>
-                    <span style="font-size: 0.72rem; color: #4ade80;">(Instant 3D Secure LKR)</span>
+                    <span>💳 Credit or Debit Card</span>
+                    <span style="font-size: 0.72rem; color: var(--primary);">(Demo only - no charge)</span>
                   </div>
                 </label>
 
-                <div id="cardFieldsWrap" style="padding: 10px 0 6px;">
-                  <div class="form-group">
-                    <label for="checkoutCardNum" class="form-label">Card Number</label>
-                    <input type="text" id="checkoutCardNum" class="form-input" placeholder="4242 •••• •••• 4242" />
-                  </div>
-                  <div class="form-row-2">
-                    <div class="form-group">
-                      <label for="checkoutCardExpiry" class="form-label">Expiry (MM/YY)</label>
-                      <input type="text" id="checkoutCardExpiry" class="form-input" placeholder="12/28" />
-                    </div>
-                    <div class="form-group">
-                      <label for="checkoutCardCvv" class="form-label">CVV Security Code</label>
-                      <input type="password" id="checkoutCardCvv" class="form-input" maxlength="4" placeholder="888" />
-                    </div>
-                  </div>
-                </div>
+                <p class="checkout-demo-note">This browser-only demo does not process card payments. No card details are requested or saved.</p>
 
                 <label class="payment-radio-card">
                   <input type="radio" name="paymentMethod" value="cod" />
@@ -291,7 +278,7 @@
                   <input type="radio" name="paymentMethod" value="koko" />
                   <div class="pay-card-label">
                     <span>📱 Koko / Mintpay (Buy Now Pay Later)</span>
-                    <span style="font-size: 0.72rem; color: #4ade80;">(3 Interest-Free Installments)</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">(Not connected in this demo)</span>
                   </div>
                 </label>
 
@@ -299,7 +286,7 @@
                   <input type="radio" name="paymentMethod" value="lankaqr" />
                   <div class="pay-card-label">
                     <span>🏦 LankaQR / FriMi / Bank Transfer</span>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">(Scan QR &amp; Pay)</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">(Not connected in this demo)</span>
                   </div>
                 </label>
               </div>
@@ -325,16 +312,16 @@
 
             <div>
               <div class="checkout-total-box">
-                <span class="chk-total-label">Total to Charge:</span>
+                <span class="chk-total-label">Order Total:</span>
                 <span id="checkoutGrandTotal" class="chk-total-val">Rs. 0.00</span>
               </div>
 
               <button type="submit" id="btnConfirmOrder" class="btn-confirm-order">
-                🔒 Confirm &amp; Place Bespoke Order
+                Save Order on This Device
               </button>
 
               <p style="font-size: 0.70rem; color: var(--text-muted); text-align: center; margin-top: 10px;">
-                By placing this order, data will be stored securely in your browser's localStorage invoice register.
+                Orders and stock are saved only in this browser. They are not sent to Zenvy and may be cleared with browser data.
               </p>
             </div>
           </div>
@@ -507,6 +494,7 @@
 
   <!-- Scripts -->
   <script src="js/products.js"></script>
+  <script src="js/account.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/search.js"></script>
   <script src="js/accessibility.js"></script>

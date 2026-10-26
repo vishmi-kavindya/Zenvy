@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" class="font-size-normal">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sign in to your Zenvy account." />
+  <title>Sign In | Zenvy</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+  <header class="account-header">
+    <a href="index.html" class="brand-logo-link" aria-label="Zenvy Home">
+      <img src="images/LOGO.png" alt="Zenvy - Curated for Digital Living" class="brand-logo-img" />
+    </a>
+    <nav class="account-nav" aria-label="Account navigation">
+      <a href="products.html">Continue shopping</a>
+      <a href="register.html">Create account</a>
+    </nav>
+  </header>
+
+  <main id="mainContent" class="account-page">
+    <section class="account-card" aria-labelledby="accountTitle">
+      <div class="account-card-intro">
+        <span class="section-tag">Welcome Back</span>
+        <h1 id="accountTitle" class="account-title">Sign in to Zenvy</h1>
+        <p>Access your account and pick up where you left off.</p>
+      </div>
+
+      <form class="account-form" data-account-form="login">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email address</label>
+          <input class="form-input" type="email" id="loginEmail" name="email" autocomplete="email" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Password</label>
+          <div class="account-password-wrap">
+            <input class="form-input" type="password" id="loginPassword" name="password" autocomplete="current-password" required />
+            <button class="password-visibility-btn" type="button" data-password-toggle="loginPassword" aria-label="Show password" aria-pressed="false">Show</button>
+          </div>
+        </div>
+        <button class="btn-checkout account-submit-btn" type="submit">Sign In <span aria-hidden="true">→</span></button>
+        <p class="account-form-status" data-account-status role="status" aria-live="polite"></p>
+        <button class="btn-header-ghost account-signout-btn" type="button" data-account-signout hidden>Sign out on this browser</button>
+      </form>
+
+      <p class="account-switch-prompt">New to Zenvy? <a href="register.html">Create an account</a></p>
+      <p class="account-security-note">This browser-only demo stores account details on this device. Anyone using this browser may access or change them; this is not secure server-based authentication.</p>
+    </section>
+  </main>
+
+  <footer class="account-footer">
+    <a href="index.html">Back to Zenvy</a>
+    <span>&copy; 2026 Zenvy Luxury E-Commerce</span>
+  </footer>
+  <script src="js/account.js"></script>
+</body>
+</html>

@@ -19,6 +19,16 @@ function formatCurrency(amount) {
   const num = Number(amount) || 0;
   return "Rs. " + num.toLocaleString("en-LK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
 if (typeof window !== "undefined") {
   window.formatCurrency = formatCurrency;
 }
@@ -30,6 +40,16 @@ const PRODUCTS_STORAGE_KEY = "zenvy_products";
 const ORDERS_STORAGE_KEY = "zenvy_orders";
 const PROMO_STORAGE_KEY = "zenvy_promo";
 const SHIPPING_STORAGE_KEY = "zenvy_shipping";
+
+function getScopedCartStorageKey(key) {
+  return typeof window.getZenvyStorageKey === "function"
+    ? window.getZenvyStorageKey(key)
+    : key;
+}
+
+function hasSignedInCustomer() {
+  return typeof window.getCurrentZenvyAccount === "function" && Boolean(window.getCurrentZenvyAccount());
+}
 
 // Shipping Rates Configuration (Sri Lankan Couriers)
 const SHIPPING_OPTIONS = {
@@ -111,8 +131,10 @@ function getStoredProducts() {
 function saveStoredProducts(products) {
   try {
     localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+    return true;
   } catch (e) {
     console.error("Failed to save products to localStorage:", e);
+    return false;
   }
 }
 
@@ -137,21 +159,19 @@ function getProductDataById(productId) {
  */
 function deductInventoryStock(orderItems) {
   const catalog = getStoredProducts().map(item => ({ ...item }));
-  let modified = false;
+  for (const cartItem of orderItems) {
+    const prod = catalog.find(p => p.id === cartItem.id);
+    if (!prod || !Number.isInteger(prod.stockCount) || prod.stockCount < cartItem.quantity) {
+      return false;
+    }
+  }
 
   orderItems.forEach(cartItem => {
-    const prod = catalog.find(p => p.id === cartItem.id);
-    if (prod) {
-      const newStock = Math.max(0, (prod.stockCount || 0) - cartItem.quantity);
-      prod.stockCount = newStock;
-      prod.inStock = newStock > 0;
-      modified = true;
-    }
+    const product = catalog.find(item => item.id === cartItem.id);
+    product.stockCount -= cartItem.quantity;
+    product.inStock = product.stockCount > 0;
   });
-
-  if (modified) {
-    saveStoredProducts(catalog);
-  }
+  return saveStoredProducts(catalog);
 }
 
 /* ==========================================================================
@@ -165,9 +185,10 @@ function deductInventoryStock(orderItems) {
  */
 function getCart() {
   try {
-    let raw = localStorage.getItem(CART_STORAGE_KEY) || 
-              localStorage.getItem("cart") || 
-              localStorage.getItem(LEGACY_CART_KEY);
+    let raw = localStorage.getItem(getScopedCartStorageKey(CART_STORAGE_KEY));
+    if (!raw && !hasSignedInCustomer()) {
+      raw = localStorage.getItem("cart") || localStorage.getItem(LEGACY_CART_KEY);
+    }
     if (raw) {
       const items = JSON.parse(raw);
       if (Array.isArray(items)) {
@@ -188,13 +209,18 @@ function getCart() {
 function saveCart(cart) {
   try {
     const cleanCart = cart.filter(item => item && item.id && item.quantity > 0);
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cleanCart));
-    localStorage.setItem("cart", JSON.stringify(cleanCart));
-    localStorage.setItem(LEGACY_CART_KEY, JSON.stringify(cleanCart));
+    localStorage.setItem(getScopedCartStorageKey(CART_STORAGE_KEY), JSON.stringify(cleanCart));
+    if (!hasSignedInCustomer()) {
+      localStorage.setItem("cart", JSON.stringify(cleanCart));
+      localStorage.setItem(LEGACY_CART_KEY, JSON.stringify(cleanCart));
+    }
+    updateCartBadges();
+    return true;
   } catch (e) {
     console.error("Failed to save cart to localStorage:", e);
+    showToast("Could not save your bag in browser storage. Free some storage space and try again.", "error");
+    return false;
   }
-  updateCartBadges();
 }
 
 /* ==========================================================================
@@ -248,7 +274,7 @@ function addToCart(productId, quantity = 1, event = null) {
     });
   }
 
-  saveCart(cart);
+  if (!saveCart(cart)) return;
 
   // User feedback: Toast & A11y Live Announcement
   showToast(`Added ${product.name} (${newQuantity} in bag)`, "success");
@@ -334,7 +360,7 @@ function updateCartQuantity(productId, newQuantity) {
     if (item) item.quantity = qty;
   }
 
-  saveCart(cart);
+  if (!saveCart(cart)) return;
 
   if (document.getElementById("cartContentArea")) {
     renderCartPage();
@@ -354,7 +380,7 @@ function removeFromCart(productId) {
   const product = getProductDataById(productId);
   const name = product ? product.name : "Item";
   const cart = getCart().filter(item => item.id !== productId);
-  saveCart(cart);
+  if (!saveCart(cart)) return;
 
   showToast(`Removed "${name}" from your bag`, "info");
   if (typeof announceLiveMessage === "function") {
@@ -381,7 +407,7 @@ function clearCart(confirmed = false) {
   }
 
   closeClearCartModal();
-  saveCart([]);
+  if (!saveCart([])) return;
   removePromoVoucher(false);
   showToast("Your shopping bag has been cleared", "info");
 
@@ -406,7 +432,7 @@ function seedDemoCart() {
     { id: "prod-1", quantity: 1 }, // Aura Luxe ANC Headphones (Rs. 28,500.00)
     { id: "prod-8", quantity: 2 }  // Ceylon Wild Bee Pure Forest Honey (Rs. 2,450.00 x 2)
   ];
-  saveCart(demoItems);
+  if (!saveCart(demoItems)) return;
   showToast("Loaded sample luxury items into your shopping bag!", "success");
   if (document.getElementById("cartContentArea")) {
     renderCartPage();
@@ -431,7 +457,7 @@ function getCartTotalQuantity() {
  */
 function getSelectedShippingOption() {
   try {
-    const saved = localStorage.getItem(SHIPPING_STORAGE_KEY);
+    const saved = localStorage.getItem(getScopedCartStorageKey(SHIPPING_STORAGE_KEY));
     if (saved && SHIPPING_OPTIONS[saved]) {
       return SHIPPING_OPTIONS[saved];
     }
@@ -448,7 +474,7 @@ function getSelectedShippingOption() {
 function selectShippingMethod(shippingId) {
   if (SHIPPING_OPTIONS[shippingId]) {
     try {
-      localStorage.setItem(SHIPPING_STORAGE_KEY, shippingId);
+      localStorage.setItem(getScopedCartStorageKey(SHIPPING_STORAGE_KEY), shippingId);
     } catch (e) {
       console.warn("Storage error", e);
     }
@@ -465,7 +491,7 @@ function selectShippingMethod(shippingId) {
  */
 function getActivePromoVoucher() {
   try {
-    const raw = localStorage.getItem(PROMO_STORAGE_KEY);
+    const raw = localStorage.getItem(getScopedCartStorageKey(PROMO_STORAGE_KEY));
     if (raw) {
       const code = raw.toUpperCase().trim();
       if (PROMO_VOUCHERS[code]) {
@@ -502,7 +528,7 @@ function applyPromoVoucher(inputCode) {
   }
 
   try {
-    localStorage.setItem(PROMO_STORAGE_KEY, code);
+    localStorage.setItem(getScopedCartStorageKey(PROMO_STORAGE_KEY), code);
   } catch (e) {
     console.warn("Storage error", e);
   }
@@ -523,7 +549,7 @@ function applyPromoVoucher(inputCode) {
  */
 function removePromoVoucher(showNotice = true) {
   try {
-    localStorage.removeItem(PROMO_STORAGE_KEY);
+    localStorage.removeItem(getScopedCartStorageKey(PROMO_STORAGE_KEY));
   } catch (e) {
     console.warn("Storage error", e);
   }
@@ -1168,6 +1194,22 @@ function openCheckoutModal() {
     totalValEl.textContent = formatCurrency(totals.grandTotal);
   }
 
+  const account = typeof window.getCurrentZenvyAccount === "function"
+    ? window.getCurrentZenvyAccount()
+    : null;
+  const checkoutFields = {
+    checkoutFullName: account?.profile?.fullName || account?.name,
+    checkoutEmail: account?.email,
+    checkoutPhone: account?.profile?.phone,
+    checkoutAddress: account?.profile?.address,
+    checkoutCity: account?.profile?.city,
+    checkoutPostal: account?.profile?.postal
+  };
+  Object.entries(checkoutFields).forEach(([id, value]) => {
+    const field = document.getElementById(id);
+    if (field && value && !field.value) field.value = value;
+  });
+
   if (modal) {
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
@@ -1198,9 +1240,6 @@ function fillTestCheckoutData() {
     checkoutAddress: "No. 45/2, Galle Road, Bambalapitiya",
     checkoutCity: "Colombo",
     checkoutPostal: "00400",
-    checkoutCardNum: "4242 •••• •••• 4242",
-    checkoutCardExpiry: "12/28",
-    checkoutCardCvv: "888",
     checkoutNotes: "Please call 077 123 4567 before delivery. Deliver during office hours."
   };
 
@@ -1209,7 +1248,7 @@ function fillTestCheckoutData() {
     if (el) el.value = val;
   });
 
-  showToast("Auto-filled Sri Lankan test checkout credentials!", "info");
+  showToast("Filled sample delivery details. This demo does not process real payments.", "info");
 }
 
 /**
@@ -1229,8 +1268,12 @@ function handleCheckoutSubmit(e) {
   const notes = (document.getElementById("checkoutNotes")?.value || "").trim();
 
   // Basic Validation
-  if (!fullName || !email || !address || !city) {
+  if (!fullName || !email || !phone || !address || !city || !postal) {
     showToast("Please fill in all required shipping fields", "error");
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast("Please enter a valid email address", "error");
     return;
   }
 
@@ -1239,18 +1282,30 @@ function handleCheckoutSubmit(e) {
     showToast("No items in bag to checkout", "error");
     return;
   }
+  const unavailableItem = totals.items.find(item => {
+    const product = getProductDataById(item.product.id);
+    return !product || !Number.isInteger(product.stockCount) || product.stockCount < item.quantity;
+  });
+  if (unavailableItem) {
+    showToast(`${unavailableItem.product.name} no longer has enough stock. Update your bag and try again.`, "error");
+    renderCartPage();
+    return;
+  }
 
   // Submit button visual loading state
   const submitBtn = document.getElementById("btnConfirmOrder");
   const origBtnContent = submitBtn ? submitBtn.innerHTML : "";
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span class="spinner" aria-hidden="true">⏳</span> Securing &amp; Processing Order...`;
+    submitBtn.innerHTML = `<span class="spinner" aria-hidden="true">⏳</span> Saving order locally...`;
   }
 
   setTimeout(() => {
     // Generate Order ID & Timestamp
-    const orderId = `ZNV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderToken = typeof window.crypto?.randomUUID === "function"
+      ? window.crypto.randomUUID().slice(0, 8)
+      : Math.random().toString(36).slice(2, 10);
+    const orderId = `ZNV-${new Date().getFullYear()}-${orderToken.toUpperCase()}`;
     const orderDate = new Date().toLocaleString("en-US", {
       dateStyle: "medium",
       timeStyle: "short"
@@ -1263,12 +1318,19 @@ function handleCheckoutSubmit(e) {
       timestamp: Date.now(),
       customer: {
         fullName,
-        email,
+        email: email.toLowerCase(),
         phone,
         address,
         city,
         postal,
-        paymentMethod: paymentMethod === "card" ? "Credit / Debit Card (Verified)" : paymentMethod === "cod" ? "Cash on Delivery" : "Digital Wallet",
+        paymentMethod: paymentMethod === "card"
+          ? "Card payment (demo only - not charged)"
+          : paymentMethod === "cod"
+            ? "Cash on Delivery"
+            : paymentMethod === "koko"
+              ? "Koko / Mintpay (not connected)"
+              : "LankaQR / Bank Transfer (not connected)",
+        paymentStatus: paymentMethod === "cod" ? "Pay on delivery" : paymentMethod === "card" ? "Not charged (demo)" : "Pending external payment",
         notes
       },
       items: totals.items.map(i => ({
@@ -1287,17 +1349,44 @@ function handleCheckoutSubmit(e) {
       shippingCost: totals.shippingCost,
       tax: totals.taxAmount,
       grandTotal: totals.grandTotal,
-      status: "Confirmed & In Preparation"
+      status: "Saved in this browser - not sent to store"
     };
 
-    // 1. Deduct Stock from localStorage Products
-    deductInventoryStock(totals.items.map(i => ({ id: i.product.id, quantity: i.quantity })));
+    const previousCart = getCart();
+    if (!saveCart([])) {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnContent;
+      }
+      return;
+    }
+    if (!saveOrderToStorage(order)) {
+      saveCart(previousCart);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnContent;
+      }
+      return;
+    }
+    if (!deductInventoryStock(totals.items.map(i => ({ id: i.product.id, quantity: i.quantity })))) {
+      removeOrderFromStorage(order.orderId);
+      saveCart(previousCart);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnContent;
+      }
+      showToast("Stock changed while placing your order. Please review your bag and try again.", "error");
+      return;
+    }
 
-    // 2. Save Order into localStorage
-    saveOrderToStorage(order);
-
-    // 3. Clear Cart in localStorage
-    saveCart([]);
+    if (typeof window.updateCurrentZenvyProfile === "function") {
+      try {
+        window.updateCurrentZenvyProfile({ fullName, phone, address, city, postal });
+      } catch (error) {
+        console.error("Could not save customer delivery details:", error);
+        showToast("Order saved, but delivery details could not be saved to your account.", "warning");
+      }
+    }
     removePromoVoucher(false);
 
     // Restore button
@@ -1335,29 +1424,30 @@ function showOrderSuccessModal(order) {
   content.innerHTML = `
     <div class="order-success-card">
       <div class="success-badge-animation" aria-hidden="true">✓</div>
-      <span class="success-tag">Payment &amp; Reservation Confirmed</span>
+      <span class="success-tag">Order Saved in This Browser</span>
       <h2 class="success-title">Thank You For Your Order!</h2>
       <p class="success-subtitle">
-        Your bespoke order <strong>#${order.orderId}</strong> has been received and is being carefully packaged in signature luxury presentation.
+        Order <strong>#${escapeHTML(order.orderId)}</strong> is saved on this device only. It has not been sent to Zenvy for fulfillment.
       </p>
 
       <div class="invoice-summary-box">
         <div class="invoice-meta-row">
           <div>
             <span class="meta-label">Order Number</span>
-            <strong class="meta-val">${order.orderId}</strong>
+            <strong class="meta-val">${escapeHTML(order.orderId)}</strong>
           </div>
           <div>
             <span class="meta-label">Order Date</span>
-            <strong class="meta-val">${order.date}</strong>
+            <strong class="meta-val">${escapeHTML(order.date)}</strong>
           </div>
           <div>
             <span class="meta-label">Payment Method</span>
-            <strong class="meta-val">${order.customer.paymentMethod}</strong>
+            <strong class="meta-val">${escapeHTML(order.customer.paymentMethod)}</strong>
+            <span class="meta-label">${escapeHTML(order.customer.paymentStatus)}</span>
           </div>
           <div>
             <span class="meta-label">Delivery Address</span>
-            <strong class="meta-val">${order.customer.address}, ${order.customer.city}</strong>
+            <strong class="meta-val">${escapeHTML(order.customer.address)}, ${escapeHTML(order.customer.city)}</strong>
           </div>
         </div>
 
@@ -1370,8 +1460,8 @@ function showOrderSuccessModal(order) {
           </div>
           ${order.items.map(i => `
             <div class="invoice-item-row">
-              <span class="inv-name">${i.name}</span>
-              <span class="inv-qty">${i.quantity}</span>
+              <span class="inv-name">${escapeHTML(i.name)}</span>
+              <span class="inv-qty">${escapeHTML(i.quantity)}</span>
               <span class="inv-price">${formatCurrency(i.price)}</span>
               <span class="inv-total" style="text-align: right;">${formatCurrency(i.lineTotal)}</span>
             </div>
@@ -1385,7 +1475,7 @@ function showOrderSuccessModal(order) {
           </div>
           ${order.discount > 0 ? `
             <div class="inv-breakdown-row discount">
-              <span>Voucher Savings (${order.promoCode}):</span>
+              <span>Voucher Savings (${escapeHTML(order.promoCode)}):</span>
               <span>−${formatCurrency(order.discount)}</span>
             </div>
           ` : ""}
@@ -1398,7 +1488,7 @@ function showOrderSuccessModal(order) {
             <span>${formatCurrency(order.tax)}</span>
           </div>
           <div class="inv-breakdown-row grand-total">
-            <strong>Grand Total Paid:</strong>
+            <strong>Order Total:</strong>
             <strong class="gold-amount">${formatCurrency(order.grandTotal)}</strong>
           </div>
         </div>
@@ -1420,7 +1510,7 @@ function showOrderSuccessModal(order) {
   document.body.classList.add("modal-open");
 
   if (typeof announceLiveMessage === "function") {
-    announceLiveMessage(`Order ${order.orderId} placed successfully. Total paid ${formatCurrency(order.grandTotal)}.`);
+    announceLiveMessage(`Order ${order.orderId} saved in this browser. Order total ${formatCurrency(order.grandTotal)}.`);
   }
 }
 
@@ -1443,7 +1533,7 @@ function closeOrderSuccessModal() {
  */
 function getStoredOrders() {
   try {
-    const raw = localStorage.getItem(ORDERS_STORAGE_KEY);
+    const raw = localStorage.getItem(getScopedCartStorageKey(ORDERS_STORAGE_KEY));
     if (raw) {
       const orders = JSON.parse(raw);
       if (Array.isArray(orders)) return orders;
@@ -1462,9 +1552,21 @@ function saveOrderToStorage(order) {
   try {
     const existing = getStoredOrders();
     existing.unshift(order); // Prepend new order at beginning
-    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(existing));
+    localStorage.setItem(getScopedCartStorageKey(ORDERS_STORAGE_KEY), JSON.stringify(existing));
+    return true;
   } catch (e) {
     console.error("Failed to save order to localStorage:", e);
+    showToast("Could not save your order in this browser. No stock was deducted.", "error");
+    return false;
+  }
+}
+
+function removeOrderFromStorage(orderId) {
+  try {
+    const orders = getStoredOrders().filter(order => order.orderId !== orderId);
+    localStorage.setItem(getScopedCartStorageKey(ORDERS_STORAGE_KEY), JSON.stringify(orders));
+  } catch (error) {
+    console.error("Could not roll back a failed order:", error);
   }
 }
 
@@ -1483,7 +1585,7 @@ function openOrderHistoryModal() {
       <div class="empty-orders-view">
         <span class="empty-orders-icon">📦</span>
         <h3>No Past Orders Found</h3>
-        <p>You have not placed any orders from this browser session yet.</p>
+        <p>You have not saved any orders in this browser yet.</p>
         <button type="button" class="btn-primary-luxury" onclick="closeOrderHistoryModal()">
           Explore Collection
         </button>
@@ -1496,25 +1598,30 @@ function openOrderHistoryModal() {
           <div class="past-order-card">
             <div class="past-order-header">
               <div>
-                <span class="past-order-id">#${ord.orderId}</span>
-                <span class="past-order-date">${ord.date}</span>
+                <span class="past-order-id">#${escapeHTML(ord.orderId)}</span>
+                <span class="past-order-date">${escapeHTML(ord.date)}</span>
               </div>
-              <span class="past-order-status-badge">● ${ord.status || 'Confirmed'}</span>
+              <span class="past-order-status-badge">● ${escapeHTML(ord.status || 'Confirmed')}</span>
             </div>
+
+            <p class="past-order-payment">
+              ${escapeHTML(ord.customer?.paymentMethod || "Payment method unavailable")} ·
+              ${escapeHTML(ord.customer?.paymentStatus || "Payment status unavailable")}
+            </p>
 
             <div class="past-order-items-preview">
               ${ord.items.map(i => `
                 <div class="past-item-pill">
                   <span class="pill-qty">${i.quantity}×</span>
-                  <span class="pill-name">${i.name}</span>
+                  <span class="pill-name">${escapeHTML(i.name)}</span>
                   <span class="pill-price">${formatCurrency(i.lineTotal)}</span>
                 </div>
               `).join("")}
             </div>
 
             <div class="past-order-footer">
-              <span class="past-order-total">Total Paid: <strong>${formatCurrency(ord.grandTotal)}</strong></span>
-              <button type="button" class="btn-reorder" onclick="reorderItems('${ord.orderId}')">
+              <span class="past-order-total">Order Total: <strong>${formatCurrency(ord.grandTotal)}</strong></span>
+              <button type="button" class="btn-reorder" data-reorder-order-id="${escapeHTML(ord.orderId)}">
                 🔁 Re-order Items
               </button>
             </div>
@@ -1523,6 +1630,10 @@ function openOrderHistoryModal() {
       </div>
     `;
   }
+
+  listContainer.querySelectorAll("[data-reorder-order-id]").forEach(button => {
+    button.addEventListener("click", () => reorderItems(button.dataset.reorderOrderId));
+  });
 
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -1614,4 +1725,17 @@ document.addEventListener("DOMContentLoaded", () => {
       closeClearCartModal();
     }
   });
+});
+
+window.addEventListener("storage", event => {
+  if (
+    event.key === CART_STORAGE_KEY ||
+    event.key?.startsWith(`${CART_STORAGE_KEY}:user:`) ||
+    event.key === PRODUCTS_STORAGE_KEY ||
+    event.key === ORDERS_STORAGE_KEY ||
+    event.key?.startsWith(`${ORDERS_STORAGE_KEY}:user:`)
+  ) {
+    updateCartBadges();
+    if (document.getElementById("cartContentArea")) renderCartPage();
+  }
 });
