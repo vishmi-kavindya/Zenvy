@@ -1,5 +1,5 @@
 /**
- * AuraMart - Accessibility & Universal Design Engine
+ * Zenvy - Accessibility & Universal Design Engine
  * HCI Assignment - Member 01
  * 
  * Implements:
@@ -12,9 +12,9 @@
  */
 
 // Storage keys
-const FONT_STORAGE_KEY = "auramart_font_size";
-const CONTRAST_STORAGE_KEY = "auramart_high_contrast";
-const SPEECH_RATE_KEY = "auramart_speech_rate";
+const FONT_STORAGE_KEY = "zenvy_font_size";
+const CONTRAST_STORAGE_KEY = "zenvy_high_contrast";
+const SPEECH_RATE_KEY = "zenvy_speech_rate";
 
 // Speech Synthesis State
 let synth = window.speechSynthesis || null;
@@ -212,14 +212,14 @@ function narratePageSummary() {
 
   if (isHomePage) {
     script = `
-      Welcome to AuraMart, your inclusive e-commerce shopping destination designed for everyone with Universal Design principles.
+      Welcome to Zenvy, your inclusive luxury e-commerce shopping destination designed for everyone with Universal Design principles.
       This store features exactly ten high quality products divided across three curated categories: Electronics, Clothing, and Food.
       You can use the top accessibility bar to switch between Normal, Large, and Extra Large font sizes, toggle High Contrast mode, and control audio narration.
       Use the search bar in the navigation header to search for any product, or browse our categories and featured products below.
     `;
   } else {
     script = `
-      You are on the AuraMart Product Catalog page.
+      You are on the Zenvy Product Catalog page.
       Browse our ten accessible items.
       You can filter items by All, Electronics, Clothing, or Food, and sort by Popularity, Price low to high, Price high to low, or Ratings.
       Use the Listen button on any product card for instant audio readout of its specifications and price.
@@ -349,7 +349,7 @@ function initializeAccessibility() {
   // 1. Load Font Size Preference
   let savedFontSize = "normal";
   try {
-    savedFontSize = localStorage.getItem(FONT_STORAGE_KEY) || "normal";
+    savedFontSize = localStorage.getItem(FONT_STORAGE_KEY) || localStorage.getItem("auramart_font_size") || "normal";
   } catch (e) {}
   setFontSize(savedFontSize);
 
@@ -365,7 +365,7 @@ function initializeAccessibility() {
   // 2. Load High Contrast Preference
   let savedContrast = false;
   try {
-    savedContrast = localStorage.getItem(CONTRAST_STORAGE_KEY) === "true";
+    savedContrast = (localStorage.getItem(CONTRAST_STORAGE_KEY) === "true") || (localStorage.getItem("auramart_high_contrast") === "true");
   } catch (e) {}
 
   if (savedContrast) {
@@ -414,7 +414,7 @@ function initializeAccessibility() {
   const rateSelect = document.getElementById("speechRateSelect");
   if (rateSelect) {
     try {
-      const savedRate = localStorage.getItem(SPEECH_RATE_KEY);
+      const savedRate = localStorage.getItem(SPEECH_RATE_KEY) || localStorage.getItem("auramart_speech_rate");
       if (savedRate) {
         speechRate = parseFloat(savedRate);
         rateSelect.value = savedRate;

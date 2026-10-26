@@ -1,5 +1,5 @@
 /**
- * AuraMart - Search & Filter Engine
+ * Zenvy - Search & Filter Engine
  * HCI Assignment - Member 01
  * 
  * Manages:
