@@ -864,15 +864,16 @@ function renderCartPage() {
           </div>
 
           <!-- Primary Checkout Button -->
-          <a 
-            href="checkout.html" 
+          <button 
+            type="button" 
             class="btn-checkout" 
+            onclick="handleProceedToCheckout()"
             aria-label="Proceed to Secure Checkout. Total ${formatCurrency(totals.grandTotal)}"
           >
             <span class="lock-icon" aria-hidden="true">🔒</span>
             <span class="btn-text">Proceed to Checkout</span>
             <span class="checkout-arrow" aria-hidden="true">→</span>
-          </a>
+          </button>
 
           <!-- Accessibility Audio Narration -->
           <button 
@@ -1166,57 +1167,34 @@ function narrateCartBreakdown() {
    ========================================================================== */
 
 /**
- * Open Checkout Dialog Modal
+ * Workflow: Shopping Cart -> Proceed to Checkout -> Is user logged in?
+ * If YES: Navigate to checkout.html
+ * If NO: Navigate to login.html?redirect=checkout.html
  */
-function openCheckoutModal() {
+function handleProceedToCheckout() {
   const totals = calculateCartTotals();
   if (totals.items.length === 0) {
     showToast("Your shopping bag is empty", "warning");
     return;
   }
 
-  const modal = document.getElementById("checkoutModal");
-  const itemsContainer = document.getElementById("checkoutItemsSummary");
-  const totalValEl = document.getElementById("checkoutGrandTotal");
-
-  if (itemsContainer) {
-    itemsContainer.innerHTML = totals.items.map(i => `
-      <div class="checkout-mini-item">
-        <span class="chk-qty">${i.quantity}x</span>
-        <span class="chk-title">${i.product.name}</span>
-        <span class="chk-price">${formatCurrency(i.lineTotal)}</span>
-      </div>
-    `).join("");
+  const account = typeof getCurrentZenvyAccount === "function" ? getCurrentZenvyAccount() : null;
+  if (!account) {
+    showToast("Please sign in to proceed to checkout", "info");
+    window.location.href = "login.html?redirect=checkout.html";
+  } else {
+    window.location.href = "checkout.html";
   }
+}
+if (typeof window !== "undefined") {
+  window.handleProceedToCheckout = handleProceedToCheckout;
+}
 
-  if (totalValEl) {
-    totalValEl.textContent = formatCurrency(totals.grandTotal);
-  }
-
-  const account = typeof window.getCurrentZenvyAccount === "function"
-    ? window.getCurrentZenvyAccount()
-    : null;
-  const checkoutFields = {
-    checkoutFullName: account?.profile?.fullName || account?.name,
-    checkoutEmail: account?.email,
-    checkoutPhone: account?.profile?.phone,
-    checkoutAddress: account?.profile?.address,
-    checkoutCity: account?.profile?.city,
-    checkoutPostal: account?.profile?.postal
-  };
-  Object.entries(checkoutFields).forEach(([id, value]) => {
-    const field = document.getElementById(id);
-    if (field && value && !field.value) field.value = value;
-  });
-
-  if (modal) {
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("modal-open");
-
-    const firstInput = document.getElementById("checkoutFullName");
-    if (firstInput) firstInput.focus();
-  }
+/**
+ * Open Checkout Dialog Modal (redirects to workflow checkout)
+ */
+function openCheckoutModal() {
+  handleProceedToCheckout();
 }
 
 function closeCheckoutModal() {

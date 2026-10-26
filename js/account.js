@@ -204,9 +204,12 @@ async function registerAccount(form) {
 
   localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(accounts));
   form.reset();
+  const regParams = new URLSearchParams(window.location.search);
+  const regRedirect = regParams.get("redirect");
+  const loginUrl = regRedirect ? `login.html?redirect=${encodeURIComponent(regRedirect)}` : "login.html";
   setFormStatus(form, "Your account has been saved! Redirecting to sign in…");
   setTimeout(() => {
-    window.location.href = "login.html";
+    window.location.href = loginUrl;
   }, 1000);
 }
 
@@ -238,15 +241,35 @@ async function loginAccount(form) {
   if (signOutButton) signOutButton.hidden = false;
   const profileLink = form.querySelector("[data-account-profile-link]");
   if (profileLink) profileLink.hidden = false;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectTarget = urlParams.get("redirect") || "profile.html";
+  const redirectLabel = redirectTarget.includes("checkout") ? "Checkout" : "your profile";
+
   form.reset();
-  setFormStatus(form, `Welcome back, ${account.name}! Redirecting to your profile…`);
+  setFormStatus(form, `Welcome back, ${account.name}! Redirecting to ${redirectLabel}…`);
   setTimeout(() => {
-    window.location.href = "profile.html";
+    window.location.href = redirectTarget;
   }, 700);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   updateAccountNavigation();
+
+  // Workflow support: if user redirected from cart checkout, show notice and preserve links
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirect = urlParams.get("redirect");
+  if (redirect && redirect.includes("checkout")) {
+    const notice = document.getElementById("checkoutRedirectNotice");
+    if (notice) notice.style.display = "flex";
+
+    document.querySelectorAll('a[href="register.html"], a[href^="register.html?"]').forEach(a => {
+      a.href = "register.html?redirect=checkout.html";
+    });
+    document.querySelectorAll('a[href="login.html"], a[href^="login.html?"]').forEach(a => {
+      a.href = "login.html?redirect=checkout.html";
+    });
+  }
   document.querySelectorAll("[data-password-toggle]").forEach(button => {
     button.addEventListener("click", () => {
       const input = document.getElementById(button.dataset.passwordToggle);

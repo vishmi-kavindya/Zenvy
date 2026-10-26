@@ -22,9 +22,13 @@
   <main id="mainContent" class="account-page">
     <section class="account-card" aria-labelledby="accountTitle">
       <div class="account-card-intro">
-        <span class="section-tag">Welcome Back</span>
+        <span class="section-tag" id="loginSectionTag">Welcome Back</span>
         <h1 id="accountTitle" class="account-title">Sign in to Zenvy</h1>
-        <p>Access your account and pick up where you left off.</p>
+        <p id="loginIntroSubtitle">Access your account and pick up where you left off.</p>
+        <div id="checkoutRedirectNotice" class="checkout-account-banner" style="display: none; margin-top: 14px;">
+          <span class="acc-icon" aria-hidden="true">🔒</span>
+          <span>Sign in required to proceed to <strong>Secure Checkout</strong>.</span>
+        </div>
       </div>
 
       <form class="account-form" data-account-form="login">

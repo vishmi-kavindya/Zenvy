@@ -22,9 +22,13 @@
   <main id="mainContent" class="account-page">
     <section class="account-card" aria-labelledby="accountTitle">
       <div class="account-card-intro">
-        <span class="section-tag">Join Zenvy</span>
+        <span class="section-tag" id="registerSectionTag">Join Zenvy</span>
         <h1 id="accountTitle" class="account-title">Create your account</h1>
-        <p>Save your details for a more seamless shopping experience.</p>
+        <p id="registerIntroSubtitle">Save your details for a more seamless shopping experience.</p>
+        <div id="checkoutRedirectNotice" class="checkout-account-banner" style="display: none; margin-top: 14px;">
+          <span class="acc-icon" aria-hidden="true">🔒</span>
+          <span>Create an account to complete your <strong>Secure Checkout</strong>.</span>
+        </div>
       </div>
 
       <form class="account-form" data-account-form="register">

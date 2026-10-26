@@ -50,6 +50,14 @@ function initCheckoutPage() {
   const container = document.getElementById("checkoutPageContent");
   if (!container) return;
 
+  // Workflow Step: Is user logged in?
+  // If NO -> Redirect to Login Page with return redirect to Checkout
+  const account = typeof getCurrentZenvyAccount === "function" ? getCurrentZenvyAccount() : null;
+  if (!account) {
+    window.location.href = "login.html?redirect=checkout.html";
+    return;
+  }
+
   const totals = typeof calculateCartTotals === "function" ? calculateCartTotals() : null;
   if (!totals || totals.items.length === 0) {
     renderCheckoutEmptyBag(container);
@@ -224,13 +232,13 @@ function renderCheckoutWorkspace(container, totals) {
             </div>
           </div>
 
-          <!-- Step 3: Sri Lankan Payment Options -->
+          <!-- Step 3: Mock Payment Gateway (Sri Lanka) -->
           <div class="checkout-step-card">
             <div class="checkout-step-header">
               <div class="step-badge">3</div>
               <div>
-                <h2 class="step-title">Payment Method (Sri Lanka)</h2>
-                <p class="step-subtitle">Select your preferred transaction channel</p>
+                <h2 class="step-title">Mock Payment Gateway (Sri Lanka)</h2>
+                <p class="step-subtitle">Authorize simulated checkout transaction in Sri Lankan Rupees (LKR)</p>
               </div>
             </div>
 
@@ -239,7 +247,7 @@ function renderCheckoutWorkspace(container, totals) {
                 <input type="radio" name="checkoutPaymentMethod" value="card" checked onchange="handlePaymentMethodChange(this.value)" />
                 <div class="pay-card-label">
                   <span>💳 Credit / Debit Card (Visa, MasterCard, LankaPay)</span>
-                  <span style="font-size: 0.72rem; color: var(--primary);">(Verified Checkout Demo)</span>
+                  <span style="font-size: 0.72rem; color: var(--primary);">(Simulated Payment Gateway Demo)</span>
                 </div>
               </label>
 
@@ -297,10 +305,8 @@ function renderCheckoutWorkspace(container, totals) {
 
             <button type="submit" id="btnPlaceOrderMain" class="btn-checkout" style="min-height: 56px; font-size: 1.1rem;">
               <span class="lock-icon" aria-hidden="true">🔒</span>
-              <span id="btnPlaceOrderText">Complete Order &bull; ${formatLKRCurrency(totals.grandTotal)}</span>
+              <span id="btnPlaceOrderText">Authorize Mock Payment &bull; ${formatLKRCurrency(totals.grandTotal)}</span>
               <span class="checkout-arrow" aria-hidden="true">→</span>
-            </button>
-            <p id="checkoutFormStatus" class="account-form-status" role="status" aria-live="polite"></p>
           </div>
         </form>
       </section>
@@ -574,13 +580,21 @@ function processDedicatedCheckout(event) {
     return;
   }
 
-  // Button loading state
+  const paymentLabel = paymentMethod === "card"
+    ? "Credit / Debit Card (Verified Demo)"
+    : paymentMethod === "cod"
+      ? "Cash on Delivery (Islandwide COD)"
+      : paymentMethod === "koko"
+        ? "Koko / Mintpay (3 Installments)"
+        : "LankaQR / FriMi Bank Transfer";
+
+  // Step in workflow: Mock Payment
   if (submitBtn) {
     submitBtn.disabled = true;
-    if (submitText) submitText.textContent = "Securing & Processing Order…";
+    if (submitText) submitText.textContent = "Authorizing Mock Payment…";
   }
 
-  setTimeout(() => {
+  showMockPaymentGateway(totals.grandTotal, paymentLabel, () => {
     const orderToken = typeof window.crypto?.randomUUID === "function"
       ? window.crypto.randomUUID().slice(0, 8)
       : Math.random().toString(36).slice(2, 10);
@@ -590,18 +604,10 @@ function processDedicatedCheckout(event) {
       timeStyle: "short"
     });
 
-    const paymentLabel = paymentMethod === "card"
-      ? "Credit / Debit Card (Verified Demo)"
-      : paymentMethod === "cod"
-        ? "Cash on Delivery (Islandwide COD)"
-        : paymentMethod === "koko"
-          ? "Koko / Mintpay (3 Installments)"
-          : "LankaQR / FriMi Bank Transfer";
-
     const paymentStatus = paymentMethod === "cod"
       ? "Pay Cash upon Delivery"
       : paymentMethod === "card"
-        ? "Card Verified (Demo Mode)"
+        ? "Mock Payment Authorized & Confirmed"
         : "Pending Payment Confirmation";
 
     const order = {
@@ -667,14 +673,82 @@ function processDedicatedCheckout(event) {
       removePromoVoucher(false);
     }
 
-    // Announce and redirect to dedicated Order Confirmation & Status page
-    announceLive(`Order ${order.orderId} placed successfully. Total ${formatLKRCurrency(order.grandTotal)}.`);
-    showToastNotification(`Order #${order.orderId} placed successfully!`, "success");
+    announceLive(`Mock payment authorized. Order ${order.orderId} confirmed. Total ${formatLKRCurrency(order.grandTotal)}.`);
+    showToastNotification(`Mock Payment authorized! Order #${order.orderId} confirmed!`, "success");
 
+    // Workflow Step: Order Confirmation
     setTimeout(() => {
       window.location.href = `order-confirmation.html?orderId=${encodeURIComponent(order.orderId)}`;
-    }, 600);
-  }, 1000);
+    }, 400);
+  });
+}
+
+/**
+ * Interactive Mock Payment Gateway Simulation Modal
+ */
+function showMockPaymentGateway(amount, paymentLabel, onComplete) {
+  let modal = document.getElementById("mockPaymentGatewayModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "mockPaymentGatewayModal";
+    modal.className = "checkout-modal-backdrop is-open";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div class="checkout-modal-dialog" style="max-width: 480px; text-align: center; padding: 36px 28px; box-shadow: var(--shadow-lg);">
+      <div style="font-size: 3rem; margin-bottom: 12px;" aria-hidden="true">🔒</div>
+      <span class="section-tag">Mock Payment Gateway</span>
+      <h3 style="font-family: var(--font-serif); font-size: 1.5rem; color: #ffffff; margin: 8px 0 10px;">
+        Authorizing Mock Transaction
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 18px;">
+        Processing simulated transaction for <strong style="color: var(--primary);">${formatLKRCurrency(amount)}</strong> via <strong>${escapeHTML(paymentLabel)}</strong>…
+      </p>
+
+      <div class="mock-gateway-amount-box" style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 20px;">
+        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; text-transform: uppercase;">Amount to Authorize</span>
+        <strong style="font-size: 1.5rem; color: var(--primary); font-family: var(--font-serif);">${formatLKRCurrency(amount)}</strong>
+      </div>
+
+      <div id="mockGatewayStatusText" style="font-size: 0.82rem; color: var(--accent-sand); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="status-pulse-dot" aria-hidden="true"></span> Securing simulated transaction authorization…
+      </div>
+
+      <div class="progress-bar-track" style="margin-bottom: 16px;">
+        <div id="mockGatewayBar" class="progress-bar-fill" style="width: 25%; transition: width 400ms ease;"></div>
+      </div>
+      <span style="font-size: 0.70rem; color: var(--text-muted);">256-Bit SSL Demo Sandbox • Simulated Authorization (No Real Charge)</span>
+    </div>
+  `;
+
+  document.body.classList.add("modal-open");
+
+  // Animate mock payment progress
+  setTimeout(() => {
+    const bar = document.getElementById("mockGatewayBar");
+    const statusText = document.getElementById("mockGatewayStatusText");
+    if (bar) bar.style.width = "75%";
+    if (statusText) statusText.innerHTML = `<span class="status-pulse-dot" aria-hidden="true"></span> Verifying Sri Lankan banking simulation credentials…`;
+  }, 450);
+
+  setTimeout(() => {
+    const bar = document.getElementById("mockGatewayBar");
+    const statusText = document.getElementById("mockGatewayStatusText");
+    if (bar) {
+      bar.style.width = "100%";
+      bar.style.background = "#4ade80";
+    }
+    if (statusText) statusText.innerHTML = `<span style="color: #4ade80; font-weight: 700;">✓ Mock Payment Authorized &amp; Confirmed!</span>`;
+  }, 950);
+
+  setTimeout(() => {
+    modal.remove();
+    document.body.classList.remove("modal-open");
+    if (typeof onComplete === "function") onComplete();
+  }, 1350);
 }
 
 /**
