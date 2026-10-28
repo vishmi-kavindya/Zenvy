@@ -310,6 +310,34 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
     color: #fffefa;
 }
 
+.seller-signout-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 42px;
+    margin-top: auto;
+    padding: 10px 12px;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, .09);
+    background: transparent;
+    color: #c2bcb2;
+    font: inherit;
+    font-size: .82rem;
+    text-align: left;
+    cursor: pointer;
+    transition: color .18s ease;
+}
+
+.seller-signout-link:hover {
+    color: #d7b78e;
+}
+
+.seller-signout-link + .store-link {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 10px;
+}
+
 .dashboard-page .main-content {
     width: min(100%, 1440px);
     margin: 0 auto;
@@ -595,6 +623,16 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
         display: none;
     }
 
+    .seller-signout-link {
+        display: block;
+        width: auto;
+        min-height: 36px;
+        margin: 12px 0 0;
+        padding: 7px 12px 0;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+        text-align: center;
+    }
+
     .dashboard-page .sidebar ul {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -662,7 +700,13 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
 .dashboard-page {
     background:
         radial-gradient(ellipse at 86% 2%, rgba(197, 155, 109, .11), transparent 32rem),
-        #f7f5f1;
+        #f1ede6;
+}
+
+.dashboard-page .admin-container {
+    background:
+        radial-gradient(ellipse at 86% 2%, rgba(197, 155, 109, .11), transparent 32rem),
+        #f1ede6;
 }
 
 .dashboard-page .main-content {
@@ -1066,6 +1110,10 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
 .admin-subpage select:focus-visible {
     outline: 2px solid #9a7349;
     outline-offset: 3px;
+}
+
+.admin-subpage .seller-signout-link {
+    color: #c2bcb2;
 }
 
 @media (max-width: 900px) {
