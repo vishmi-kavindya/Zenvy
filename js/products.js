@@ -1,5 +1,5 @@
 /**
- * AuraMart - Products & Store Catalog Data (VÉLORA Luxury Theme)
+ * Zenvy - Products & Store Catalog Data (VÉLORA Luxury Theme)
  * HCI Assignment - Member 01
  * 
  * Contains exactly 10 products across exactly 3 categories:

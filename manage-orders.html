@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders - Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="admin.html">Dashboard</a></li>
+                <li><a href="manage-products.html">Manage Products</a></li>
+                <li><a href="manage-orders.html" class="active">Manage Orders</a></li>
+                <li><a href="../index.html">Back to Store</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Order & Sales Management</h1>
+            </header>
+
+            <section class="sales-summary">
+                <div class="stat-card">
+                    <h3>Total Sales Revenue</h3>
+                    <p id="total-revenue">$0.00</p>
+                </div>
+            </section>
+
+            <section class="table-section">
+                <h2>Customer Orders</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total ($)</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <!-- Dynamic orders -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/order-management.js"></script>
+</body>
+</html>
