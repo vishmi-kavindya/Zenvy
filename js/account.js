@@ -206,14 +206,23 @@ async function registerAccount(form) {
   form.reset();
   const regParams = new URLSearchParams(window.location.search);
   const regRedirect = regParams.get("redirect");
-  const loginUrl = regRedirect ? `login.html?redirect=${encodeURIComponent(regRedirect)}` : "login.html";
-  setFormStatus(form, "Your account has been saved! Redirecting to sign in…");
+  const nextPage = regRedirect ? `login.html?redirect=${encodeURIComponent(regRedirect)}` : "index.html";
+  setFormStatus(
+    form,
+    regRedirect
+      ? "Your account has been saved! Redirecting to sign in…"
+      : "Your account has been saved! Returning to Zenvy…"
+  );
   setTimeout(() => {
-    window.location.href = loginUrl;
+    window.location.href = nextPage;
   }, 1000);
 }
 
 async function loginAccount(form) {
+  if (window.isSellerLoginMode && typeof window.loginSellerAccount === "function") {
+    return window.loginSellerAccount(form);
+  }
+
   const email = document.getElementById("loginEmail").value.trim().toLowerCase();
   const password = document.getElementById("loginPassword").value;
   const account = getStoredAccounts().find(savedAccount => savedAccount.email === email);
@@ -325,7 +334,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loginForm = document.querySelector('[data-account-form="login"]');
   const signOutButton = document.querySelector("[data-account-signout]");
-  if (loginForm instanceof HTMLFormElement && signOutButton instanceof HTMLButtonElement) {
+  if (
+    loginForm instanceof HTMLFormElement &&
+    signOutButton instanceof HTMLButtonElement &&
+    !window.isSellerLoginMode
+  ) {
     try {
       const rawSession = localStorage.getItem(ACCOUNT_SESSION_KEY);
       if (rawSession) {
