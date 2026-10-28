@@ -102,7 +102,7 @@ function updateAccountNavigation() {
     const container = link.parentElement;
     if (!container) return;
     let signOutButton = container.querySelector("[data-account-nav-signout]");
-    if (account && !signOutButton) {
+    if (account && !signOutButton && !link.hasAttribute("data-hide-account-nav-signout")) {
       signOutButton = document.createElement("button");
       signOutButton.type = "button";
       signOutButton.className = "btn-account-trigger account-nav-signout";
@@ -110,7 +110,7 @@ function updateAccountNavigation() {
       signOutButton.textContent = "Sign Out";
       signOutButton.addEventListener("click", signOutZenvyAccount);
       link.after(signOutButton);
-    } else if (!account && signOutButton) {
+    } else if ((!account || link.hasAttribute("data-hide-account-nav-signout")) && signOutButton) {
       signOutButton.remove();
     }
   });
@@ -127,6 +127,7 @@ function signOutZenvyAccount() {
     if (document.querySelector('[data-account-form="login"]')) {
       setFormStatus(document.querySelector('[data-account-form="login"]'), "You have signed out on this browser.");
     }
+    window.location.href = "login.html";
   } catch (error) {
     console.error("Could not sign out:", error);
     const loginForm = document.querySelector('[data-account-form="login"]');
@@ -252,8 +253,12 @@ async function loginAccount(form) {
   if (profileLink) profileLink.hidden = false;
 
   const urlParams = new URLSearchParams(window.location.search);
-  const redirectTarget = urlParams.get("redirect") || "profile.html";
-  const redirectLabel = redirectTarget.includes("checkout") ? "Checkout" : "your profile";
+  const redirectTarget = urlParams.get("redirect") || "index.html";
+  const redirectLabel = redirectTarget.includes("checkout")
+    ? "Checkout"
+    : redirectTarget === "index.html"
+      ? "the home page"
+      : "your profile";
 
   form.reset();
   setFormStatus(form, `Welcome back, ${account.name}! Redirecting to ${redirectLabel}…`);
