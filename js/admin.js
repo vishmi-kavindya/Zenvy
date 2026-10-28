@@ -15,8 +15,8 @@ function readCollection(primaryKey, fallbackKey, label) {
 }
 
 function loadDashboardStats() {
-    const products = readCollection("products", "zenvy_products", "product");
-    const orders = readCollection("orders", "zenvy_orders", "order");
+    const products = readCollection("zenvy_products", "products", "product");
+    const orders = readDashboardOrders();
 
     document.getElementById("total-products").textContent = products?.length ?? "—";
     document.getElementById("total-orders").textContent = orders?.length ?? "—";
@@ -58,6 +58,33 @@ function loadDashboardStats() {
     });
 
     alertContainer.appendChild(list);
+}
+
+function readDashboardOrders() {
+    const keys = new Set(["orders", "zenvy_orders"]);
+    for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index);
+        if (key?.startsWith("zenvy_orders:user:")) keys.add(key);
+    }
+
+    const orders = [];
+    for (const key of keys) {
+        const raw = localStorage.getItem(key);
+        if (raw === null) continue;
+
+        try {
+            const collection = JSON.parse(raw);
+            if (!Array.isArray(collection)) {
+                throw new TypeError(`Saved order data in "${key}" must be a list.`);
+            }
+            orders.push(...collection);
+        } catch (error) {
+            console.error("Could not read order data:", error);
+            return null;
+        }
+    }
+
+    return orders;
 }
 
 function createEmptyState(message) {
