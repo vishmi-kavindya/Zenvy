@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Zenvy</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="admin.html" class="active">Dashboard</a></li>
+                <li><a href="manage-products.html">Manage Products</a></li>
+                <li><a href="manage-orders.html">Manage Orders</a></li>
+                <li><a href="../index.html">Back to Store</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Dashboard Statistics</h1>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Products</h3>
+                    <p id="total-products">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Orders</h3>
+                    <p id="total-orders">0</p>
+                </div>
+                <div class="stat-card alert">
+                    <h3>Low Stock Items</h3>
+                    <p id="low-stock-count">0</p>
+                </div>
+            </section>
+
+            <section class="recent-section">
+                <h2>Low Stock Alerts</h2>
+                <div id="low-stock-alert-list" class="alert-box">
+                    <!-- Dynamic low stock warnings -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
