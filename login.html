@@ -15,7 +15,7 @@
     </a>
     <nav class="account-nav" aria-label="Account navigation">
       <a href="products.html">Continue shopping</a>
-      <a href="register.html">Create account</a>
+      <a href="register.html" data-customer-only>Create account</a>
     </nav>
   </header>
 
@@ -48,8 +48,9 @@
         <button class="btn-header-ghost account-signout-btn" type="button" data-account-signout hidden>Sign out on this browser</button>
       </form>
 
-      <p class="account-switch-prompt">New to Zenvy? <a href="register.html">Create an account</a></p>
+      <p class="account-switch-prompt" data-customer-only>New to Zenvy? <a href="register.html">Create an account</a></p>
       <p class="account-security-note">This browser-only demo stores account details on this device. Anyone using this browser may access or change them; this is not secure server-based authentication.</p>
+      <p class="account-switch-prompt" data-seller-signin-link>Seller? <a href="login.html?role=seller&amp;redirect=admin.html">Open seller sign in</a></p>
     </section>
   </main>
 
@@ -57,6 +58,7 @@
     <a href="index.html">Back to Zenvy</a>
     <span>&copy; 2026 Zenvy Luxury E-Commerce</span>
   </footer>
+  <script src="js/seller-auth.js"></script>
   <script src="js/account.js"></script>
 </body>
 </html>

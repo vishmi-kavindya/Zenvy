@@ -102,7 +102,7 @@ function updateAccountNavigation() {
     const container = link.parentElement;
     if (!container) return;
     let signOutButton = container.querySelector("[data-account-nav-signout]");
-    if (account && !signOutButton) {
+    if (account && !signOutButton && !link.hasAttribute("data-hide-account-nav-signout")) {
       signOutButton = document.createElement("button");
       signOutButton.type = "button";
       signOutButton.className = "btn-account-trigger account-nav-signout";
@@ -110,7 +110,7 @@ function updateAccountNavigation() {
       signOutButton.textContent = "Sign Out";
       signOutButton.addEventListener("click", signOutZenvyAccount);
       link.after(signOutButton);
-    } else if (!account && signOutButton) {
+    } else if ((!account || link.hasAttribute("data-hide-account-nav-signout")) && signOutButton) {
       signOutButton.remove();
     }
   });
@@ -127,6 +127,7 @@ function signOutZenvyAccount() {
     if (document.querySelector('[data-account-form="login"]')) {
       setFormStatus(document.querySelector('[data-account-form="login"]'), "You have signed out on this browser.");
     }
+    window.location.href = "login.html";
   } catch (error) {
     console.error("Could not sign out:", error);
     const loginForm = document.querySelector('[data-account-form="login"]');
@@ -206,14 +207,23 @@ async function registerAccount(form) {
   form.reset();
   const regParams = new URLSearchParams(window.location.search);
   const regRedirect = regParams.get("redirect");
-  const loginUrl = regRedirect ? `login.html?redirect=${encodeURIComponent(regRedirect)}` : "login.html";
-  setFormStatus(form, "Your account has been saved! Redirecting to sign in…");
+  const nextPage = regRedirect ? `login.html?redirect=${encodeURIComponent(regRedirect)}` : "index.html";
+  setFormStatus(
+    form,
+    regRedirect
+      ? "Your account has been saved! Redirecting to sign in…"
+      : "Your account has been saved! Returning to Zenvy…"
+  );
   setTimeout(() => {
-    window.location.href = loginUrl;
+    window.location.href = nextPage;
   }, 1000);
 }
 
 async function loginAccount(form) {
+  if (window.isSellerLoginMode && typeof window.loginSellerAccount === "function") {
+    return window.loginSellerAccount(form);
+  }
+
   const email = document.getElementById("loginEmail").value.trim().toLowerCase();
   const password = document.getElementById("loginPassword").value;
   const account = getStoredAccounts().find(savedAccount => savedAccount.email === email);
@@ -243,8 +253,12 @@ async function loginAccount(form) {
   if (profileLink) profileLink.hidden = false;
 
   const urlParams = new URLSearchParams(window.location.search);
-  const redirectTarget = urlParams.get("redirect") || "profile.html";
-  const redirectLabel = redirectTarget.includes("checkout") ? "Checkout" : "your profile";
+  const redirectTarget = urlParams.get("redirect") || "index.html";
+  const redirectLabel = redirectTarget.includes("checkout")
+    ? "Checkout"
+    : redirectTarget === "index.html"
+      ? "the home page"
+      : "your profile";
 
   form.reset();
   setFormStatus(form, `Welcome back, ${account.name}! Redirecting to ${redirectLabel}…`);
@@ -325,7 +339,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loginForm = document.querySelector('[data-account-form="login"]');
   const signOutButton = document.querySelector("[data-account-signout]");
-  if (loginForm instanceof HTMLFormElement && signOutButton instanceof HTMLButtonElement) {
+  if (
+    loginForm instanceof HTMLFormElement &&
+    signOutButton instanceof HTMLButtonElement &&
+    !window.isSellerLoginMode
+  ) {
     try {
       const rawSession = localStorage.getItem(ACCOUNT_SESSION_KEY);
       if (rawSession) {

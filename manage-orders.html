@@ -3,50 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Orders - Admin</title>
+    <meta name="description" content="Review Zenvy customer orders, update fulfillment status, and track sales revenue.">
+    <title>Orders | Zenvy Admin</title>
     <link rel="stylesheet" href="css/admin.css">
+    <script src="js/seller-auth.js"></script>
 </head>
-<body>
+<body class="dashboard-page admin-subpage">
+    <a class="skip-link" href="#main-content">Skip to order management</a>
     <div class="admin-container">
-        <aside class="sidebar">
-            <h2>Admin Panel</h2>
-            <ul>
-                <li><a href="admin.html">Dashboard</a></li>
-                <li><a href="manage-products.html">Manage Products</a></li>
-                <li><a href="manage-orders.html" class="active">Manage Orders</a></li>
-                <li><a href="../index.html">Back to Store</a></li>
-            </ul>
+        <aside class="sidebar" aria-label="Admin navigation">
+            <a class="admin-brand" href="admin.html" aria-label="Zenvy Admin dashboard">
+                <span class="brand-mark" aria-hidden="true">Z</span>
+                <span><strong>ZENVY</strong><small>STORE ADMIN</small></span>
+            </a>
+            <p class="sidebar-label">Workspace</p>
+            <nav>
+                <ul>
+                    <li><a href="admin.html"><span aria-hidden="true">⌂</span>Dashboard</a></li>
+                    <li><a href="manage-products.html"><span aria-hidden="true">▦</span>Products</a></li>
+                    <li><a href="manage-orders.html" class="active" aria-current="page"><span aria-hidden="true">▤</span>Orders</a></li>
+                </ul>
+            </nav>
+            <a class="store-link" href="index.html"><span aria-hidden="true">↗</span>Back to store</a>
         </aside>
 
-        <main class="main-content">
-            <header>
-                <h1>Order & Sales Management</h1>
+        <main class="main-content" id="main-content">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">FULFILLMENT</p>
+                    <h1>Orders</h1>
+                    <p class="page-intro">Track customer orders and keep fulfillment moving.</p>
+                </div>
+                <a class="header-action" href="admin.html"><span aria-hidden="true">←</span> Dashboard</a>
             </header>
 
-            <section class="sales-summary">
-                <div class="stat-card">
-                    <h3>Total Sales Revenue</h3>
-                    <p id="total-revenue">$0.00</p>
-                </div>
+            <section class="order-summary-grid" aria-label="Sales summary">
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-icon orders-icon" aria-hidden="true">▤</span>
+                        <span class="stat-label">ALL CHANNELS</span>
+                    </div>
+                    <h2>Total orders</h2>
+                    <p class="stat-value" id="total-order-count" aria-live="polite">0</p>
+                </article>
+                <article class="stat-card revenue-card">
+                    <div class="stat-card-top">
+                        <span class="stat-icon products-icon" aria-hidden="true">Rs</span>
+                        <span class="stat-label">EXCLUDING CANCELLED</span>
+                    </div>
+                    <h2>Total revenue</h2>
+                    <p class="stat-value" id="total-revenue" aria-live="polite">Rs. 0.00</p>
+                </article>
             </section>
 
-            <section class="table-section">
-                <h2>Customer Orders</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Items</th>
-                            <th>Total ($)</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-table-body">
-                        <!-- Dynamic orders -->
-                    </tbody>
-                </table>
+            <section class="table-section orders-table-section" aria-labelledby="orders-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">CUSTOMER ACTIVITY</p>
+                        <h2 id="orders-title">Customer orders</h2>
+                    </div>
+                    <p class="table-count" id="orders-count" aria-live="polite">0 orders</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Order</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Items</th>
+                                <th scope="col">Order total</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body"></tbody>
+                    </table>
+                    <p id="orders-empty-state" class="empty-state" hidden>No customer orders yet.</p>
+                </div>
+                <p id="orders-status-message" class="form-status" role="status" aria-live="polite"></p>
             </section>
         </main>
     </div>

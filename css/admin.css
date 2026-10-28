@@ -310,6 +310,34 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
     color: #fffefa;
 }
 
+.seller-signout-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 42px;
+    margin-top: auto;
+    padding: 10px 12px;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, .09);
+    background: transparent;
+    color: #c2bcb2;
+    font: inherit;
+    font-size: .82rem;
+    text-align: left;
+    cursor: pointer;
+    transition: color .18s ease;
+}
+
+.seller-signout-link:hover {
+    color: #d7b78e;
+}
+
+.seller-signout-link + .store-link {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 10px;
+}
+
 .dashboard-page .main-content {
     width: min(100%, 1440px);
     margin: 0 auto;
@@ -595,6 +623,16 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
         display: none;
     }
 
+    .seller-signout-link {
+        display: block;
+        width: auto;
+        min-height: 36px;
+        margin: 12px 0 0;
+        padding: 7px 12px 0;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+        text-align: center;
+    }
+
     .dashboard-page .sidebar ul {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -650,5 +688,464 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
     .dashboard-page *::after {
         scroll-behavior: auto !important;
         transition-duration: .01ms !important;
+    }
+}
+
+/* Seller dashboard theme polish */
+.dashboard-page,
+.dashboard-page * {
+    font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+}
+
+.dashboard-page {
+    background:
+        radial-gradient(ellipse at 86% 2%, rgba(197, 155, 109, .11), transparent 32rem),
+        #f1ede6;
+}
+
+.dashboard-page .admin-container {
+    background:
+        radial-gradient(ellipse at 86% 2%, rgba(197, 155, 109, .11), transparent 32rem),
+        #f1ede6;
+}
+
+.dashboard-page .main-content {
+    background:
+        radial-gradient(ellipse at 92% 0, rgba(197, 155, 109, .07), transparent 28rem);
+}
+
+.dashboard-page .sidebar {
+    background:
+        radial-gradient(ellipse at 0 0, rgba(197, 155, 109, .13), transparent 22rem),
+        #0d0c0b;
+}
+
+.dashboard-page .brand-mark {
+    border-color: rgba(197, 155, 109, .7);
+    background: linear-gradient(145deg, rgba(197, 155, 109, .16), rgba(197, 155, 109, .02));
+    color: #d7b78e;
+    box-shadow: inset 0 0 14px rgba(197, 155, 109, .08);
+}
+
+.dashboard-page .admin-brand small {
+    color: #c59b6d;
+    letter-spacing: .16em;
+}
+
+.dashboard-page .sidebar ul li a.active {
+    background: linear-gradient(100deg, rgba(197, 155, 109, .17), rgba(197, 155, 109, .045));
+    box-shadow: inset 2px 0 #c59b6d;
+    color: #fdfbf7;
+}
+
+.dashboard-page .sidebar ul li a.active span {
+    color: #d7b78e;
+}
+
+.dashboard-page .dashboard-header {
+    position: relative;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(181, 136, 85, .2);
+}
+
+.dashboard-page .dashboard-header::after {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 58px;
+    height: 2px;
+    background: linear-gradient(90deg, #c59b6d, rgba(197, 155, 109, .2));
+    content: "";
+}
+
+.dashboard-page .dashboard-header h1,
+.dashboard-page .section-heading h2 {
+    font-family: "Playfair Display", Georgia, serif;
+}
+
+.dashboard-page .dashboard-header h1 {
+    font-size: clamp(2.15rem, 3.2vw, 2.8rem);
+    letter-spacing: -.045em;
+}
+
+.dashboard-page .eyebrow {
+    color: #a77a48;
+    letter-spacing: .17em;
+}
+
+.dashboard-page .header-action {
+    border-color: #c59b6d;
+    background: linear-gradient(135deg, #d2ad81, #bd8f5d);
+    color: #17130f;
+    box-shadow: 0 5px 16px rgba(129, 89, 49, .15);
+}
+
+.dashboard-page .header-action:hover {
+    border-color: #b38859;
+    background: linear-gradient(135deg, #ddbd96, #c59b6d);
+    box-shadow: 0 7px 19px rgba(129, 89, 49, .2);
+}
+
+.dashboard-page .stat-card,
+.dashboard-page .dashboard-lower {
+    border-color: rgba(181, 136, 85, .17);
+    box-shadow: 0 5px 18px rgba(49, 39, 25, .045);
+}
+
+.dashboard-page .stat-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.dashboard-page .stat-card::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(197, 155, 109, .75), rgba(197, 155, 109, .08));
+    content: "";
+}
+
+.dashboard-page .stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(181, 136, 85, .36);
+    box-shadow: 0 10px 24px rgba(49, 39, 25, .08);
+}
+
+.dashboard-page .stat-icon {
+    border: 1px solid rgba(181, 136, 85, .12);
+    background: #f5eee4;
+    color: #8e6a43;
+}
+
+.dashboard-page .orders-icon {
+    border-color: rgba(115, 128, 99, .12);
+    background: #eff0e9;
+    color: #687251;
+}
+
+.dashboard-page .stock-icon {
+    border-color: rgba(187, 92, 73, .13);
+}
+
+.dashboard-page .stat-label {
+    color: #9c805e;
+}
+
+.dashboard-page .stat-card > a {
+    color: #8c6841;
+    font-weight: 600;
+}
+
+.dashboard-page .dashboard-lower {
+    background: linear-gradient(145deg, #fffefa, #fdfaf5);
+}
+
+.dashboard-page .alert-box {
+    border-color: rgba(181, 136, 85, .2);
+    border-left-color: #c46a52;
+}
+
+.dashboard-page .alert-list li {
+    transition: background-color .18s ease;
+}
+
+.dashboard-page .alert-list li:hover {
+    background: #fdfaf5;
+}
+
+.dashboard-page a:focus-visible {
+    outline: 2px solid #b58855;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-page .stat-card {
+        transition: none;
+    }
+
+    .dashboard-page .stat-card:hover {
+        transform: none;
+    }
+}
+
+/* Product and order management */
+.admin-subpage .dashboard-header {
+    margin-bottom: 30px;
+}
+
+.admin-subpage .form-section,
+.admin-subpage .table-section {
+    margin-bottom: 22px;
+    padding: 26px 28px;
+    border: 1px solid var(--dashboard-line);
+    border-radius: 9px;
+    background: var(--dashboard-paper);
+    box-shadow: 0 3px 12px rgba(49, 39, 25, .035);
+}
+
+.admin-subpage .section-heading {
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+.admin-subpage .section-heading h2 {
+    font-size: 1.35rem;
+}
+
+.admin-subpage .product-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 16px;
+}
+
+.admin-subpage .form-group {
+    min-width: 0;
+    margin-bottom: 17px;
+}
+
+.admin-subpage .form-group label {
+    margin-bottom: 7px;
+    color: #514a42;
+    font-size: .77rem;
+    font-weight: 600;
+}
+
+.admin-subpage .form-group input,
+.admin-subpage .form-group select,
+.admin-subpage .table-section select {
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid #e2dcd3;
+    border-radius: 5px;
+    background: #fffefa;
+    color: #39342d;
+    font-size: .82rem;
+}
+
+.admin-subpage .form-group input:focus,
+.admin-subpage .form-group select:focus,
+.admin-subpage .table-section select:focus {
+    outline: 2px solid rgba(181, 136, 85, .3);
+    border-color: #b58855;
+}
+
+.admin-subpage .product-image-field {
+    grid-column: span 2;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.admin-subpage .btn-primary,
+.admin-subpage .btn-secondary,
+.admin-subpage .edit-btn,
+.admin-subpage .delete-btn {
+    min-height: 37px;
+    padding: 8px 13px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: .76rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .18s ease, border-color .18s ease;
+}
+
+.admin-subpage .btn-primary {
+    background: #29251f;
+    color: #fffefa;
+}
+
+.admin-subpage .btn-primary:hover {
+    background: #514638;
+}
+
+.admin-subpage .btn-secondary {
+    margin-left: 0;
+    background: #f2eee8;
+    color: #514a42;
+}
+
+.admin-subpage .btn-secondary:hover {
+    background: #e7dfd4;
+}
+
+.form-status {
+    min-height: 1.2em;
+    margin: 0;
+    color: #5f7659;
+    font-size: .76rem;
+}
+
+.form-status.is-error {
+    color: #a54838;
+}
+
+.table-count {
+    margin: 0;
+    color: #8d857a;
+    font-size: .77rem;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.admin-subpage .table-section table {
+    min-width: 670px;
+    color: #484139;
+    font-size: .81rem;
+}
+
+.admin-subpage .table-section th {
+    padding: 12px 13px;
+    background: #f7f5f1;
+    color: #82796e;
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.admin-subpage .table-section td {
+    padding: 12px 13px;
+    border-bottom-color: #f0ece6;
+}
+
+.admin-subpage .product-cell {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 200px;
+}
+
+.product-thumbnail {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border: 1px solid #eee8df;
+    border-radius: 5px;
+    background: #f7f5f1;
+    object-fit: cover;
+}
+
+.product-name-cell {
+    color: #39342d;
+    font-weight: 600;
+}
+
+.stock-cell.is-low {
+    color: #a54838;
+    font-weight: 700;
+}
+
+.table-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.admin-subpage .edit-btn {
+    border-color: #e9deca;
+    background: #f7f1e7;
+    color: #795e3e;
+}
+
+.admin-subpage .edit-btn:hover {
+    background: #eee3d2;
+}
+
+.admin-subpage .delete-btn {
+    border-color: #f0d9d4;
+    background: #fbefeb;
+    color: #a54838;
+}
+
+.admin-subpage .delete-btn:hover {
+    background: #f5dfd9;
+}
+
+.admin-subpage .empty-state {
+    padding: 20px 14px;
+}
+
+.admin-subpage .order-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-subpage .order-summary-grid .stat-card {
+    min-height: 154px;
+}
+
+.admin-subpage .order-summary-grid .stat-card h2 {
+    margin-top: 13px;
+}
+
+.admin-subpage .revenue-card .stat-value {
+    font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.admin-subpage .orders-table-section select {
+    width: 100%;
+    min-width: 190px;
+    min-height: 36px;
+}
+
+.admin-subpage .orders-table-section td:first-child strong {
+    color: #39342d;
+    font-size: .77rem;
+}
+
+.admin-subpage button:focus-visible,
+.admin-subpage a:focus-visible,
+.admin-subpage select:focus-visible {
+    outline: 2px solid #9a7349;
+    outline-offset: 3px;
+}
+
+.admin-subpage .seller-signout-link {
+    color: #c2bcb2;
+}
+
+@media (max-width: 900px) {
+    .admin-subpage .product-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-subpage .dashboard-header {
+        align-items: flex-start;
+    }
+
+    .admin-subpage .form-section,
+    .admin-subpage .table-section {
+        padding: 20px 16px;
+    }
+
+    .admin-subpage .product-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-subpage .product-image-field {
+        grid-column: auto;
+    }
+
+    .admin-subpage .order-summary-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .admin-subpage .order-summary-grid .stat-card {
+        min-height: 0;
     }
 }

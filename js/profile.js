@@ -629,8 +629,6 @@ function viewProfileInvoice(orderId) {
 function handleProfileSignOut() {
   if (typeof signOutZenvyAccount === "function") {
     signOutZenvyAccount();
-    showToastNotification("You have signed out.", "info");
-    initProfilePage();
   }
 }
 
