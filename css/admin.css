@@ -653,6 +653,180 @@ button.delete-btn { background-color: #c0392b; color: white; border: none; paddi
     }
 }
 
+/* Seller dashboard theme polish */
+.dashboard-page,
+.dashboard-page * {
+    font-family: "Plus Jakarta Sans", "Segoe UI", Arial, sans-serif;
+}
+
+.dashboard-page {
+    background:
+        radial-gradient(ellipse at 86% 2%, rgba(197, 155, 109, .11), transparent 32rem),
+        #f7f5f1;
+}
+
+.dashboard-page .main-content {
+    background:
+        radial-gradient(ellipse at 92% 0, rgba(197, 155, 109, .07), transparent 28rem);
+}
+
+.dashboard-page .sidebar {
+    background:
+        radial-gradient(ellipse at 0 0, rgba(197, 155, 109, .13), transparent 22rem),
+        #0d0c0b;
+}
+
+.dashboard-page .brand-mark {
+    border-color: rgba(197, 155, 109, .7);
+    background: linear-gradient(145deg, rgba(197, 155, 109, .16), rgba(197, 155, 109, .02));
+    color: #d7b78e;
+    box-shadow: inset 0 0 14px rgba(197, 155, 109, .08);
+}
+
+.dashboard-page .admin-brand small {
+    color: #c59b6d;
+    letter-spacing: .16em;
+}
+
+.dashboard-page .sidebar ul li a.active {
+    background: linear-gradient(100deg, rgba(197, 155, 109, .17), rgba(197, 155, 109, .045));
+    box-shadow: inset 2px 0 #c59b6d;
+    color: #fdfbf7;
+}
+
+.dashboard-page .sidebar ul li a.active span {
+    color: #d7b78e;
+}
+
+.dashboard-page .dashboard-header {
+    position: relative;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(181, 136, 85, .2);
+}
+
+.dashboard-page .dashboard-header::after {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 58px;
+    height: 2px;
+    background: linear-gradient(90deg, #c59b6d, rgba(197, 155, 109, .2));
+    content: "";
+}
+
+.dashboard-page .dashboard-header h1,
+.dashboard-page .section-heading h2 {
+    font-family: "Playfair Display", Georgia, serif;
+}
+
+.dashboard-page .dashboard-header h1 {
+    font-size: clamp(2.15rem, 3.2vw, 2.8rem);
+    letter-spacing: -.045em;
+}
+
+.dashboard-page .eyebrow {
+    color: #a77a48;
+    letter-spacing: .17em;
+}
+
+.dashboard-page .header-action {
+    border-color: #c59b6d;
+    background: linear-gradient(135deg, #d2ad81, #bd8f5d);
+    color: #17130f;
+    box-shadow: 0 5px 16px rgba(129, 89, 49, .15);
+}
+
+.dashboard-page .header-action:hover {
+    border-color: #b38859;
+    background: linear-gradient(135deg, #ddbd96, #c59b6d);
+    box-shadow: 0 7px 19px rgba(129, 89, 49, .2);
+}
+
+.dashboard-page .stat-card,
+.dashboard-page .dashboard-lower {
+    border-color: rgba(181, 136, 85, .17);
+    box-shadow: 0 5px 18px rgba(49, 39, 25, .045);
+}
+
+.dashboard-page .stat-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.dashboard-page .stat-card::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(197, 155, 109, .75), rgba(197, 155, 109, .08));
+    content: "";
+}
+
+.dashboard-page .stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(181, 136, 85, .36);
+    box-shadow: 0 10px 24px rgba(49, 39, 25, .08);
+}
+
+.dashboard-page .stat-icon {
+    border: 1px solid rgba(181, 136, 85, .12);
+    background: #f5eee4;
+    color: #8e6a43;
+}
+
+.dashboard-page .orders-icon {
+    border-color: rgba(115, 128, 99, .12);
+    background: #eff0e9;
+    color: #687251;
+}
+
+.dashboard-page .stock-icon {
+    border-color: rgba(187, 92, 73, .13);
+}
+
+.dashboard-page .stat-label {
+    color: #9c805e;
+}
+
+.dashboard-page .stat-card > a {
+    color: #8c6841;
+    font-weight: 600;
+}
+
+.dashboard-page .dashboard-lower {
+    background: linear-gradient(145deg, #fffefa, #fdfaf5);
+}
+
+.dashboard-page .alert-box {
+    border-color: rgba(181, 136, 85, .2);
+    border-left-color: #c46a52;
+}
+
+.dashboard-page .alert-list li {
+    transition: background-color .18s ease;
+}
+
+.dashboard-page .alert-list li:hover {
+    background: #fdfaf5;
+}
+
+.dashboard-page a:focus-visible {
+    outline: 2px solid #b58855;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-page .stat-card {
+        transition: none;
+    }
+
+    .dashboard-page .stat-card:hover {
+        transform: none;
+    }
+}
+
 /* Product and order management */
 .admin-subpage .dashboard-header {
     margin-bottom: 30px;
