@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Zenvy - Accessibility & Universal Design Engine
  * HCI Assignment - Member 01
  * 
@@ -214,14 +214,14 @@ function narratePageSummary() {
   if (isHomePage) {
     script = `
       Welcome to Zenvy, your inclusive luxury e-commerce shopping destination designed for everyone with Universal Design principles.
-      This store features exactly ten high quality products divided across three curated categories: Electronics, Clothing, and Food.
+      This store features thirty high quality products divided across three curated categories: Electronics, Clothing, and Food.
       You can use the top accessibility bar to switch between Normal, Large, and Extra Large font sizes, toggle High Contrast mode, and control audio narration.
       Use the search bar in the navigation header to search for any product, or browse our categories and featured products below.
     `;
   } else if (isProductsPage) {
     script = `
       Welcome to Zenvy, Product Catalog page.
-      Browse our ten accessible luxury items across Electronics, Clothing, and Gourmet Food.
+      Browse our thirty accessible luxury items across Electronics, Clothing, and Gourmet Food.
       You can filter items by All, Electronics, Clothing, or Food, and sort by Popularity, Price, or Ratings.
       Use the Listen button on any product card for instant audio readout of its specifications and price.
     `;
