@@ -83,10 +83,10 @@
       <!-- Navigation Links (Centered) -->
       <nav class="nav-menu" id="primaryNav" role="navigation" aria-label="Main Navigation">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="products.html" class="nav-link active" aria-current="page">Shop All</a>
-        <a href="javascript:void(0)" onclick="setCategoryFilter('clothing')" class="nav-link">Clothing</a>
-        <a href="javascript:void(0)" onclick="setCategoryFilter('electronics')" class="nav-link">Electronics</a>
-        <a href="javascript:void(0)" onclick="setCategoryFilter('food')" class="nav-link">Gourmet Food</a>
+        <a href="products.html" class="nav-link" data-category-nav="all">Shop All</a>
+        <a href="products.html?category=clothing" class="nav-link" data-category-nav="clothing">Clothing</a>
+        <a href="products.html?category=electronics" class="nav-link" data-category-nav="electronics">Electronics</a>
+        <a href="products.html?category=food" class="nav-link" data-category-nav="food">Gourmet Food</a>
       </nav>
 
       <!-- Right Header Actions: Compact Search + Cart + Mobile Menu -->

@@ -117,6 +117,16 @@ function renderProductsGrid() {
 function setCategoryFilter(category) {
   currentCategory = category;
 
+  document.querySelectorAll("[data-category-nav]").forEach(link => {
+    const isActive = link.getAttribute("data-category-nav") === category;
+    link.classList.toggle("active", isActive);
+    if (isActive) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+
   // Update active pill button state
   const pills = document.querySelectorAll(".category-pill-btn");
   pills.forEach(pill => {
