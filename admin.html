@@ -3,47 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Zenvy</title>
+    <meta name="description" content="Zenvy store administration dashboard with sales, order, and inventory statistics.">
+    <title>Dashboard | Zenvy Admin</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
-<body>
+<body class="dashboard-page">
+    <a class="skip-link" href="#main-content">Skip to dashboard</a>
     <div class="admin-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <h2>Admin Panel</h2>
-            <ul>
-                <li><a href="admin.html" class="active">Dashboard</a></li>
-                <li><a href="manage-products.html">Manage Products</a></li>
-                <li><a href="manage-orders.html">Manage Orders</a></li>
-                <li><a href="../index.html">Back to Store</a></li>
-            </ul>
+        <aside class="sidebar" aria-label="Admin navigation">
+            <a class="admin-brand" href="admin.html" aria-label="Zenvy Admin dashboard">
+                <span class="brand-mark" aria-hidden="true">Z</span>
+                <span><strong>ZENVY</strong><small>STORE ADMIN</small></span>
+            </a>
+
+            <p class="sidebar-label">Workspace</p>
+            <nav>
+                <ul>
+                    <li><a href="admin.html" class="active" aria-current="page"><span aria-hidden="true">⌂</span>Dashboard</a></li>
+                    <li><a href="manage-products.html"><span aria-hidden="true">▦</span>Products</a></li>
+                    <li><a href="manage-orders.html"><span aria-hidden="true">▤</span>Orders</a></li>
+                </ul>
+            </nav>
+
+            <a class="store-link" href="index.html"><span aria-hidden="true">↗</span>Back to store</a>
         </aside>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header>
-                <h1>Dashboard Statistics</h1>
+        <main class="main-content" id="main-content">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">OVERVIEW</p>
+                    <h1>Dashboard</h1>
+                    <p class="page-intro">Here’s what’s happening with your store.</p>
+                </div>
+                <a class="header-action" href="manage-products.html"><span aria-hidden="true">＋</span> Add product</a>
             </header>
 
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Products</h3>
-                    <p id="total-products">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Orders</h3>
-                    <p id="total-orders">0</p>
-                </div>
-                <div class="stat-card alert">
-                    <h3>Low Stock Items</h3>
-                    <p id="low-stock-count">0</p>
-                </div>
+            <section class="stats-grid" aria-label="Store statistics">
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-icon products-icon" aria-hidden="true">▦</span>
+                        <span class="stat-label">CATALOG</span>
+                    </div>
+                    <h2>Total products</h2>
+                    <p class="stat-value" id="total-products" aria-live="polite">0</p>
+                    <a href="manage-products.html">Manage products <span aria-hidden="true">→</span></a>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-card-top">
+                        <span class="stat-icon orders-icon" aria-hidden="true">▤</span>
+                        <span class="stat-label">FULFILLMENT</span>
+                    </div>
+                    <h2>Total orders</h2>
+                    <p class="stat-value" id="total-orders" aria-live="polite">0</p>
+                    <a href="manage-orders.html">View orders <span aria-hidden="true">→</span></a>
+                </article>
+
+                <article class="stat-card low-stock-stat">
+                    <div class="stat-card-top">
+                        <span class="stat-icon stock-icon" aria-hidden="true">!</span>
+                        <span class="stat-label">INVENTORY HEALTH</span>
+                    </div>
+                    <h2>Low-stock items</h2>
+                    <p class="stat-value" id="low-stock-count" aria-live="polite">0</p>
+                    <span class="stat-caption">Products with 5 or fewer units</span>
+                </article>
             </section>
 
-            <section class="recent-section">
-                <h2>Low Stock Alerts</h2>
-                <div id="low-stock-alert-list" class="alert-box">
-                    <!-- Dynamic low stock warnings -->
+            <section class="dashboard-lower">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">INVENTORY</p>
+                        <h2>Low-stock alerts</h2>
+                        <p class="section-description">Restock these products to keep them available to customers.</p>
+                    </div>
+                    <a href="manage-products.html" class="text-link">Manage inventory <span aria-hidden="true">→</span></a>
+                </div>
+
+                <div id="low-stock-alert-list" class="alert-box" aria-live="polite" aria-atomic="true">
+                    <p class="empty-state">Checking inventory…</p>
                 </div>
             </section>
         </main>
